@@ -11,6 +11,8 @@ exports.up = function(db, callback) {
     datacenter: { type: 'text' },
     location:   { type: 'text' },
     code:       { type: 'text' },
+    role:       { type: 'text' },
+    notes:      { type: 'text' },
     created_at: { type: 'timestamp', default: 'now()'},
     updated_at: { type: 'timestamp', default: 'now()'},
   },callback);

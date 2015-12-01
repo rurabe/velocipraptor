@@ -6,7 +6,7 @@
   "author": "Ryan Urabe",
   "license": "ISC",
   "engines": {
-    "node": "0.10.38"
+    "node": "4.2.2"
   },
   "babel": {},
   "dependencies": {
@@ -29,8 +29,8 @@
     "db-migrate": "^0.10.0-beta.4",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
-    "react-dom": "^0.14.2",
-    "react": "^0.14.2",
+    "react-dom": "^0.14.3",
+    "react": "^0.14.3",
     "vinyl-source-stream": "^1.1.0"
   }
 }

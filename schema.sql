@@ -32,9 +32,9 @@ SET search_path = public, pg_catalog;
 CREATE FUNCTION update_address_from_server_assignment() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-  DECLARE
   BEGIN
-    UPDATE addresses SET server_id = (CASE WHEN NEW.assigned THEN NEW.server_id ELSE NULL END) WHERE ip = NEW.ip;
+    UPDATE addresses SET server_id = (CASE WHEN NEW.assigned THEN NEW.server_id ELSE NULL END) WHERE id = NEW.address_id;
+  RETURN NULL;
   END;
 $$;
 
@@ -203,6 +203,7 @@ CREATE TABLE servers (
     datacenter text,
     location text,
     code text,
+    role text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );

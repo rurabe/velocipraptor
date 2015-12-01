@@ -24,6 +24,7 @@ exports.up = function(db, callback) {
     search_date:     { type: 'timestamp' },
     event_name:      { type: 'text' },
     event_link:      { type: 'text' },
+    notes:           { type: 'text' },
     address_id:      { type: 'int' },
     server_id:       { type: 'int' },
     created_at:      { type: 'timestamp', default: 'now()'},
