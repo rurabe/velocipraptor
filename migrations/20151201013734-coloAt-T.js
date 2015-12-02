@@ -2,13 +2,13 @@ var dbm = global.dbm || require('db-migrate');
 var type = dbm.dataType;
 
 var DATA = [
-  ['Colo@','66.242'],
-  ['Colo@','68.169'],
-  ['Colo@','89.167'],
-  ['Colo@','91.222'],
-  ['Colo@','91.244'],
-  ['Colo@','91.247'],
-  ['Colo@','178.216'],
+  ['Colo@','66.242/16'],
+  ['Colo@','68.169/16'],
+  ['Colo@','89.167/16'],
+  ['Colo@','91.222/16'],
+  ['Colo@','91.244/16'],
+  ['Colo@','91.247/16'],
+  ['Colo@','178.216/16'],
 ];
 
 var unassign = function(arr){
