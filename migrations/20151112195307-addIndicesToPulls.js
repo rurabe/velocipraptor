@@ -4,7 +4,7 @@ var type = dbm.dataType;
 exports.up = function(db, callback) {
   db.runSql("create index index_address_id_on_pulls on pulls (address_id);",function(){
     db.runSql("create index index_server_id_on_pulls on pulls (server_id);",function(){
-      db.runSql("create index index_thread_log_id_on_pulls on pulls (thread_log_id);",function(){
+      db.runSql("create unique index index_thread_log_id_on_pulls on pulls (thread_log_id);",function(){
         db.runSql("create index index_server_on_pulls on pulls (server);",function(){
           db.runSql("create index index_final_status_on_pulls on pulls (final_status);",function(){
             db.runSql("create index index_refresh_time_on_pulls on pulls (refresh_time);",function(){

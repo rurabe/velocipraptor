@@ -19,7 +19,7 @@ exports.up = function(db, callback) {
     pw:              { type: 'text' },
     ticket_type_id:  { type: 'text' },
     refresh_time:    { type: 'real' },
-    rotter:          { type: 'text' },
+    sale_type:       { type: 'text' },
     search_criteria: { type: 'text' },
     search_date:     { type: 'timestamp' },
     event_name:      { type: 'text' },
