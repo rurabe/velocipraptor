@@ -11,14 +11,22 @@
   "babel": {},
   "dependencies": {
     "bluebird": "^3.0.5",
+<<<<<<< HEAD
     "db-migrate-pg": "^0.1.6",
+=======
+    "connect-redis": "^3.0.1",
+>>>>>>> f9c38a605adf37caecbc7e932af5a24c30a490e4
     "dotenv": "^1.2.0",
     "express": "^4.13.3",
+    "express-session": "^1.12.1",
     "jade": "^1.11.0",
     "moment": "^2.10.6",
     "moment-timezone": "^0.4.1",
     "mysql": "^2.9.0",
+    "passport": "^0.3.2",
+    "passport-google-oauth": "^0.2.0",
     "pg": "^4.4.3",
+    "react-bootstrap": "^0.28.1",
     "socket.io": "^1.3.7",
     "socket.io-client": "^1.3.7",
     "squel": "^4.2.2"
@@ -35,8 +43,13 @@
     "db-migrate": "^0.10.0-beta.4",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
-    "react-dom": "^0.14.3",
+    "gulp-sass": "^2.1.0",
+    "gulp-uglifycss": "^1.0.5",
+    "history": "^1.13.1",
     "react": "^0.14.3",
+    "react-bootstrap": "^0.28.1",
+    "react-dom": "^0.14.3",
+    "react-router": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
 }
