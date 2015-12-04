@@ -32,11 +32,13 @@ const Routes = {
     app.use(passport.session());
     app.get('/auth/google', passport.authenticate('google',{scope:['https://www.googleapis.com/auth/plus.login']}),function(req,res){});
     app.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/'}),function(req,res){ res.redirect('/') });
+    app.post('/logout',function(req,res){req.logout(); res.redirect('/')})
+
 
     app.get("/",function(req,res){
       try{
         if(req.isAuthenticated()){
-          res.render('app')
+          res.render('app',{props: {user: req.user}})
         } else {
           res.render('index')
         }
