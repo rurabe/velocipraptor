@@ -27,6 +27,7 @@ exports.up = function(db, callback) {
     notes:           { type: 'text' },
     address_id:      { type: 'int' },
     server_id:       { type: 'int' },
+    success:         { type: 'boolean' },
     created_at:      { type: 'timestamp', default: 'now()'},
     updated_at:      { type: 'timestamp', default: 'now()'},
   },callback);

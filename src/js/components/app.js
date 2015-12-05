@@ -4,14 +4,14 @@ const React = require('react');
 const Router = require('react-router').Router
 const Route = require('react-router').Route
 
-const AddressesPage = require('./addresses_page');
+const AddressesContainer = require('./addresses_container');
 
 
 const App = React.createClass({
   render: function(){
     return (
       <Router>
-        <Route path="/" component={AddressesPage}/>
+        <Route path="/" component={AddressesContainer}/>
       </Router>
     );
   }

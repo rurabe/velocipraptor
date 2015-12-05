@@ -7,7 +7,7 @@ const moment = require('moment-timezone');
 
 const DB = require('../db');
 
-const TimeHelper = require('../../iso/time_helper');
+const TimeHelper = require('../helpers/time_helper');
 
 const pool = mysql.createPool({
   host     : '68.168.209.186',
@@ -47,6 +47,7 @@ const _parse = function(row){
     search_date: _parseDate(row['Search Date']),
     event_name: _parseStr(row['Event Name']),
     event_link: _parseStr(row['Event Link']),
+    success: _parseSuccess(row),
   }
 };
 
@@ -68,6 +69,12 @@ const _parseDate = function(datestring){
     return moment.tz([m[3],(m[1] - 1),m[2],hour,m[5]],'America/Los_Angeles').toISOString();
   }
 };
+
+const _parseSuccess = function(row){
+  let status = row['Final Status'];
+  if(status.match(/refresh/i) || status.match(/stopped/i)){ return false }
+  return true;
+}
 
 const ThreadLog = {
   getLatest: function(){
