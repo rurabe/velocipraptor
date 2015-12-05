@@ -6,7 +6,7 @@ const B = require('react-bootstrap');
 const Navbar  = React.createClass({
 	render: function(){
     return (
-      <B.Navbar inverse>
+      <B.Navbar>
         <B.Navbar.Header>
           <B.Navbar.Brand>
             <a>Velocipraptor</a>

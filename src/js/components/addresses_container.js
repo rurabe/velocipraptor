@@ -8,6 +8,7 @@ const Container = require('./container');
 const AddressesStore = require('../stores/addresses_store');
 
 const Navbar = require('./navbar');
+const AddressesTable = require('./addresses_table');
 
 class AddressesContainer extends Container {
 
@@ -23,10 +24,10 @@ class AddressesContainer extends Container {
   render(){
     return (
       <div id="addressesPage">
-        <Navbar user={this.props.user} />
+        <Navbar user={this.state.user} />
         <div className="container">
           <h1>Addresses</h1>
-          <p>{JSON.stringify(this.state.addresses.toJSON())}</p>
+          <AddressesTable addresses={this.state.addresses} />
         </div>
       </div>
     );

@@ -10,15 +10,23 @@ let _addresses = Immutable.Map();
 
 const _arrayToObj = function(arr){
   return arr.reduce( (o,e) => {
-    o[e.id] = e;
+    o[e.id] = _calculate(e);
     return o;
   },{})
 }
 
+const _calculate = function(add){
+  add.pc = add.pulls.length;
+  add.suc = add.pulls.filter(p => p.s).length;
+  add.sr = ((add.suc / add.pc) * 100).toFixed(2) ;
+  return add;
+}
+
 class AddressesStore extends BaseStore {
   getState(){
+    let addys = _addresses
     return {
-      addresses: _addresses,
+      addresses: addys.toIndexedSeq(),
     };
   }
 
@@ -36,5 +44,7 @@ class AddressesStore extends BaseStore {
   }
 
 };
+
+window.AS = AddressesStore;
 
 module.exports = new AddressesStore(Dispatcher);
