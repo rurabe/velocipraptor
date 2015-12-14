@@ -1,50 +1,22 @@
 'use strict';
-
-const Immutable = require('immutable');
-const BaseStore = require('./base_store');
-const request = require('superagent');
-
+const {MapStore} = require('flux/utils');
 const Dispatcher = require('../dispatcher');
+const Immutable = require('immutable');
 
 let _addresses = Immutable.Map();
 
-const _arrayToObj = function(arr){
-  return arr.reduce( (o,e) => {
-    o[e.id] = _calculate(e);
-    return o;
-  },{})
-}
-
-const _calculate = function(add){
-  add.pc = add.pulls.length;
-  add.suc = add.pulls.filter(p => p.s).length;
-  add.sr = ((add.suc / add.pc) * 100).toFixed(2) ;
-  return add;
-}
-
-class AddressesStore extends BaseStore {
-  getState(){
-    let addys = _addresses
-    return {
-      addresses: addys.toIndexedSeq(),
-    };
-  }
-
-  reduce(action,done){
-    switch(action.type) {
-      case 'addresses/query':
-        request.get('/api/addresses').query(action.params).end((err,res) => {
-          _addresses = Immutable.fromJS(_arrayToObj(res.body.addresses));
-          done();
-        });
-        break;
+class AddressesStore extends MapStore {
+  reduce(state, action){
+    switch (action.type) {
+      case 'addresses.state':
+        return Immutable.fromJS(action.addresses);
+      case 'addresses.merge':
+        return state.mergeDeep(Immutable.fromJS(action.addresses));
       default:
-        break;
-     }
+        return state;
+    }
   }
-
 };
 
-window.AS = AddressesStore;
-
 module.exports = new AddressesStore(Dispatcher);
+

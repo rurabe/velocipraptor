@@ -1,8 +1,8 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const App = require('../components/app');
+const AppRouter = require('../components/app_router');
 
 document.addEventListener("DOMContentLoaded", event => {
-  ReactDOM.render(<App/>,document.getElementById('main'));
+  ReactDOM.render(<AppRouter/>,document.getElementById('main'));
 });

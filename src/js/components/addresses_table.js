@@ -7,6 +7,7 @@ const AddressesTableTextCell = require('./addresses_table_text_cell');
 const AddressesTableFnCell = require('./addresses_table_fn_cell');
 
 const pullsFn = function(props){
+  console.log(props)
   return props.data.getIn([props.rowIndex,'pulls']).size
 };
 
@@ -14,8 +15,8 @@ const successFn = function(props){
   return props.data.getIn([props.rowIndex,'pulls']).filter(p => p.get('s')).size;
 }
 
-class AddressesTable extends React.Component {
-  render() {
+const AddressesTable = React.createClass({
+  render: function() {
     let data = this.props.addresses;
     return (
       <Table
@@ -27,13 +28,13 @@ class AddressesTable extends React.Component {
         <Column
           header={<Cell>Datacenter</Cell>}
           cell={
-            <AddressesTableTextCell field="sd" data={data} />
+            <AddressesTableTextCell field="datacenter" data={data} />
           }
           width={200} />
         <Column
           header={<Cell>Server</Cell>}
           cell={
-            <AddressesTableTextCell field="sip" data={data} />
+            <AddressesTableTextCell field="server_ip" data={data} />
           }
           width={200} />
         <Column
@@ -45,24 +46,25 @@ class AddressesTable extends React.Component {
         <Column
           header={<Cell>Successes</Cell>}
           cell={
-            <AddressesTableTextCell field="suc" data={data} />
+            <AddressesTableTextCell field="successes_count" data={data} />
           }
           width={100} />
         <Column
           header={<Cell>Pulls</Cell>}
           cell={
-            <AddressesTableTextCell field="pc" data={data} />
+            <AddressesTableTextCell field="pulls_count" data={data} />
           }
           width={100} />
         <Column
           header={<Cell>Success Rate</Cell>}
           cell={
-            <AddressesTableTextCell field="sr" data={data} />
+            <AddressesTableTextCell field="success_rate" data={data} />
           }
           width={100} />
       </Table>
     );
-  }
-}
+  },
+
+});
 
 module.exports = AddressesTable;
