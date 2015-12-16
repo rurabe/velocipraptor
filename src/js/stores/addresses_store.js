@@ -3,8 +3,6 @@ const {MapStore} = require('flux/utils');
 const Dispatcher = require('../dispatcher');
 const Immutable = require('immutable');
 
-let _addresses = Immutable.Map();
-
 class AddressesStore extends MapStore {
   reduce(state, action){
     switch (action.type) {

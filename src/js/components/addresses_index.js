@@ -7,7 +7,7 @@ const AddressesIndex = React.createClass({
     return (
       <div id="addressesPage">
         <h1>Addresses</h1>
-        <AddressesTable addresses={this.props.addresses} />
+        <AddressesTable {...this.props}/>
       </div>
     );
   }
