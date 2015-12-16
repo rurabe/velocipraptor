@@ -3,8 +3,10 @@ const React = require('react');
 const {Cell} = require('fixed-data-table');
 const {Input} = require('react-bootstrap');
 const TableActions = require('../actions/table_actions');
+const SpeedLimit = require('../mixins/speed_limit');
 
 const TableHeaderInput = React.createClass({
+  mixins: [SpeedLimit],
   render: function(){
     return (
       <Cell>
@@ -13,7 +15,9 @@ const TableHeaderInput = React.createClass({
     );
   },
   _onChange: function(e){
-    TableActions.filter(this.props.attribute,e.target.value.toLowerCase());
+    this.speedLimit( () => { 
+      TableActions.filter(this.props.attribute,e.target.value.toLowerCase()) 
+    },500);
   }
 });
 

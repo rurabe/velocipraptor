@@ -35,17 +35,19 @@ const textFilter = function(column,criteria){
   };
 };
 
-const filters = {
-  'datacenter':      textFilter,
-  'server_ip':       textFilter,
-  'ip':              textFilter,
-  'successes_count': numFilter,
-  'pulls_count':     numFilter,
-  'success_rate':    numFilter,
-};
-
 const getFilter = function(column,criteria){
-  return filters[column](column,criteria);
+  switch(column){
+    case 'datacenter':
+    case 'server_ip':
+    case 'ip':
+      return textFilter(column,criteria);
+    case 'successes_count':
+    case 'pulls_count':
+    case 'success_rate':
+      return numFilter(column,criteria);
+    default:
+      return textFilter(column,criteria);
+  }
 }
 
 class AddressesContainer extends React.Component {
