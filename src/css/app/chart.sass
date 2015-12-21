@@ -1,1 +1,27 @@
 div#chart
+  .date
+    circle
+      fill: $brand-success
+    rect
+      fill: $brand-primary
+  .success-path
+    stroke: $brand-success
+
+  .axis
+    & > path
+      fill: none
+      stroke-width: 3px
+
+    .tick
+      stroke-width: 1px
+
+    &.y.count
+      & > path,.tick line
+        stroke: $brand-primary
+
+    &.y.success-rate
+      & > path,.tick line
+        stroke: $brand-success
+
+    &.x
+      stroke: black

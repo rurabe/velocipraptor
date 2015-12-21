@@ -5,6 +5,8 @@ const {Row,Col} = require('react-bootstrap');
 
 const AddressesActions = require('../actions/addresses_actions');
 
+const TimeHelpers = require('../helpers/time_helpers');
+
 const ChartDatepickers = React.createClass({
   render: function(){
     return (
@@ -21,14 +23,14 @@ const ChartDatepickers = React.createClass({
   },
   _changeStartDate: function(date){
     AddressesActions.index({
-      start_date: date.format("YYYY-MM-DD"),
-      end_date: this.props.endDate
+      start_date: TimeHelpers.pt(date).startOf('day').toISOString(),
+      end_date: this.props.endDate,
     });
   },
   _changeEndDate: function(date){
     AddressesActions.index({
       start_date: this.props.startDate,
-      end_date: date.format("YYYY-MM-DD")
+      end_date: TimeHelpers.pt(date).endOf('day').toISOString(),
     });
   }
 });

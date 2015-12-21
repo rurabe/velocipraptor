@@ -38,32 +38,22 @@ const AddressesChart = React.createClass({
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     let format = "M/D"
-    let startDate = moment(this.props.startDate);
-    let endDate = moment(this.props.endDate);
+    let startDate = TimeHelpers.pt(this.props.startDate);
+    let endDate = TimeHelpers.pt(this.props.endDate);
     let xDomain = TimeHelpers.ordinalDates(startDate,endDate,format);
 
-    let x = d3.scale.ordinal().domain(xDomain).rangeRoundBands([0, width], 0.5);
+    let x = d3.scale.ordinal().domain(xDomain).rangeRoundBands([0, width], 0.8);
     let xAxis = d3.svg.axis().scale(x).orient('bottom');
-
-    chart.append("g").attr("class","axis x")
-      .attr("transform",`translate(0,${height})`)
-      .call(xAxis);
 
     let ySucc = d3.scale.linear().domain([0, 100]).range([height,0]);
     let ySuccAxis = d3.svg.axis().scale(ySucc).orient("right")
 
-    chart.append("g").attr("class","axis y success-rate")
-      .attr("transform",`translate(${width},0)`)
-      .call(ySuccAxis);
 
     let yCount = d3.scale.linear().domain([0,d3.max(data,d => d.pulls)]).range([height,0]);
-    let yCountAxis = d3.svg.axis().scale(yCount).orient("left");
-
-    chart.append("g").attr("class","axis y count")
-      .call(yCountAxis);
+    let yCountAxis = d3.svg.axis().scale(yCount).orient("left")
 
     let succRateData = d3.svg.line()
-      .x( d => x(moment(d.date).format(format) ) + x.rangeBand()/2 )
+      .x( d => x( TimeHelpers.pt(d.date).format(format) ) + x.rangeBand()/2 )
       .y( d => ySucc(d.success_rate) )
       .interpolate("linear");
                          
@@ -72,23 +62,35 @@ const AddressesChart = React.createClass({
       .data(data)
       .enter().append("g").attr("class","date")
 
-    date.append("circle")
-      .attr("r", 5)
-      .attr("cx", (d,i) => x( moment(d.date).format(format) ) + x.rangeBand()/2 )
-      .attr("cy", (d,i) => ySucc(d.success_rate) )
-      .attr("data-rate", (d,i) => d.success_rate )
-      // .attr("height", function(d) { return height - y(d.value); })
+    chart.append("path")
+      .attr("d", succRateData(data))
+      .attr("class", "success-path")
+      .attr("fill", "none")
+      .attr("stroke-width",2)
 
     date.append("rect")
       .attr('width',x.rangeBand())
-      .attr('x', d => x( moment(d.date).format(format) ))
+      .attr('x', d => x( TimeHelpers.pt(d.date).format(format) ))
       .attr('y', d => yCount(d.pulls) )
       .attr('height', d => height - yCount(d.pulls) )
 
-    chart.append("path")
-      .attr("d", succRateData(data))
-      .attr("stroke", "blue")
-      .attr("fill", "none");
+
+    date.append("circle")
+      .attr("r", 5)
+      .attr("cx", (d,i) => x( TimeHelpers.pt(d.date).format(format) ) + x.rangeBand()/2 )
+      .attr("cy", (d,i) => ySucc(d.success_rate) )
+      .attr("data-rate", (d,i) => d.success_rate )
+
+    chart.append("g").attr("class","axis x")
+      .attr("transform",`translate(0,${height})`)
+      .call(xAxis);
+
+    chart.append("g").attr("class","axis y success-rate")
+      .attr("transform",`translate(${width},0)`)
+      .call(ySuccAxis);
+    chart.append("g").attr("class","axis y count")
+      .call(yCountAxis);
+
 
     return (
       <div id="chart" ref="chart">

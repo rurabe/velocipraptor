@@ -1,5 +1,5 @@
 'use strict';
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 const TimeHelpers = {
   parseHour: function(hours,meridian){
@@ -18,6 +18,9 @@ const TimeHelpers = {
       r.push( start.add(1,'day').format(format) )
     }
     return r;
+  },
+  pt: function(t){
+    return moment.tz(t,'America/Los_Angeles');
   }
 };
 

@@ -2,15 +2,17 @@
 const {MapStore} = require('flux/utils');
 const Dispatcher = require('../dispatcher');
 const Immutable = require('immutable');
-const moment = require('moment');
+const moment = require('moment-timezone');
+
+const TimeHelpers = require('../helpers/time_helpers');
 
 class TableStore extends MapStore {
   getInitialState(){
     return Immutable.Map({
       sort_column: undefined,
       sort_direction: undefined,
-      start_date: moment().subtract(7,'days').format("YYYY-MM-DD"),
-      end_date: moment().format("YYYY-MM-DD"),
+      start_date: TimeHelpers.pt(moment()).startOf('day').subtract(7,'days').toISOString(),
+      end_date: TimeHelpers.pt(moment()).endOf('day').toISOString(),
       filters: Immutable.Map({}),
     });
   }
