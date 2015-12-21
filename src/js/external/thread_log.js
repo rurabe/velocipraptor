@@ -7,7 +7,7 @@ const moment = require('moment-timezone');
 
 const DB = require('../db');
 
-const TimeHelper = require('../helpers/time_helper');
+const TimeHelpers = require('../helpers/time_helpers');
 
 const pool = mysql.createPool({
   host     : '68.168.209.186',
@@ -65,7 +65,7 @@ const _parseDate = function(datestring){
   if(!datestring){ return null; }
   let m = datestring.match(/(\d+)\/(\d+)\/(\d+) at (\d+)\:(\d+) (am|pm)/i)
   if(m){
-    let hour = TimeHelper.parseHour(m[4],m[6]);
+    let hour = TimeHelpers.parseHour(m[4],m[6]);
     return moment.tz([m[3],(m[1] - 1),m[2],hour,m[5]],'America/Los_Angeles').toISOString();
   }
 };
@@ -79,7 +79,7 @@ const _parseSuccess = function(row){
 const ThreadLog = {
   getLatest: function(){
     return DB.query('select thread_log_id from pulls order by thread_log_id desc limit 1').then(results => {
-      return results[0] ? results[0].thread_log_id : 0; 
+      return results[0] ? results[0].thread_log_id : 115000; 
     }).then( lastId => {
       let q = squel.select('*').from('ThreadLog').where('id > ?',lastId).order('id').limit(100);
       return _query(q.toParam().text,q.toParam().values);

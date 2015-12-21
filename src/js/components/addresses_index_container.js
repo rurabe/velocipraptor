@@ -73,7 +73,10 @@ class AddressesContainer extends React.Component {
   }
 
   componentDidMount(){
-    AddressesActions.index({})
+    AddressesActions.index({
+      start_date: this.state.table.get('start_date'),
+      end_date: this.state.table.get('end_date'),
+    });
   }
 
   render(){

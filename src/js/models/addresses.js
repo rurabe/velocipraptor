@@ -9,7 +9,7 @@ const _calculateStatistics = function(addresses){
     let address  = addresses[id];
     address.pulls_count = countObj(address.pulls);
     address.successes_count = countObj(address.pulls,( p => p.success ));
-    address.success_rate = (address.successes_count / address.pulls_count).toFixed(3);
+    address.success_rate = Math.round(address.successes_count * 100 / address.pulls_count);
     r[id] = address;
   }
   return r;
@@ -28,8 +28,6 @@ const Addresses = {
     return DB.query(this.select(params).toParam()).then( rows => _calculateStatistics(rows[0].json) )
   },
   select: function(params){
-    let startTime = params.startTime || moment().subtract(7,'days').toISOString();
-    let endTime   = params.endTime   || new Date().toISOString();
     let q = squel.select()
       .field("addresses.id")
       .field("addresses.ip")
@@ -41,8 +39,8 @@ const Addresses = {
       .from("addresses")
       .join("pulls",null,"addresses.id = pulls.address_id")
       .left_join("servers",null,"addresses.server_id = servers.id")
-      .where("pulls.search_date >= ?",startTime)
-      .where("pulls.search_date <= ?",endTime)
+      .where("pulls.search_date >= ?",params.start_date)
+      .where("pulls.search_date <= ?",params.end_date)
       .group("addresses.id,servers.id")
     return squel.select().field("coalesce(json_object_agg(a.id,a),'{}'::json)",'json').from(q,'a');
   }
