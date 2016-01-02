@@ -9,9 +9,13 @@ exports.up = function(db, callback) {
     server_id:  { type: 'int' },
     created_at: { type: 'timestamp', default: 'now()'},
     updated_at: { type: 'timestamp', default: 'now()'},
-  },callback);
+  },() => {
+    db.runSql("create trigger timestamps_on_addresses before insert or update on addresses for each row execute procedure timestamp_on_change();")
+  });
 };
 
 exports.down = function(db, callback) {
-  db.dropTable('addresses',callback);
+  db.runSql("drop trigger if exists timestamps_on_addresses on addresses;",() => {
+    db.dropTable('addresses',callback);
+  });
 };

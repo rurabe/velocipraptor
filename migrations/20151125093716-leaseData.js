@@ -475,16 +475,16 @@ var DATA = [
   ['204.239.214.0/23','XNS','12/17/2015','3/16/2016'],
 ];
 
-var insertLeases = function(leases){
-  var values = leases.map(function(lease){
-    let note = lease[4] ? `'${lease[4]}'` : 'NULL';
-    return `('${lease[0]}','${lease[1]}','${lease[2]}','${lease[3]}',${note},now(),now())`
+var insertLeases = function(ranges){
+  var values = ranges.map(function(range){
+    let note = range[4] ? `'${range[4]}'` : 'NULL';
+    return `('${range[0]}','${range[1]}', ${note},now(),now())`
   }).join(",");
-  return "INSERT INTO leases(range,isp,start_date,end_date,notes,created_at,updated_at) VALUES "+values+";";
+  return "INSERT INTO ranges(ips,isp,notes,created_at,updated_at) VALUES "+values+";";
 }
 
 exports.up = function(db, callback) {
-  db.runSql(insertLeases(DATA),callback);
+  db.runSql(insertRanges(DATA),callback);
 };
 
 exports.down = function(db, callback) {
