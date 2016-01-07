@@ -7,7 +7,8 @@ const browserHistory = require('history/lib/createBrowserHistory');
 
 
 const AppLayout = require('./app_layout');
-const AddressesIndexContainer = require('./addresses_index_container');
+const DatacentersIndexContainer = require('./datacenters_index_container');
+const DatacentersShowContainer = require('./datacenters_show_container');
 
 
 const AppRouter = React.createClass({
@@ -15,7 +16,8 @@ const AppRouter = React.createClass({
     return (
       <Router history={browserHistory()} >
         <Route path="/" component={AppLayout} >
-          <IndexRoute component={AddressesIndexContainer} />
+          <IndexRoute component={DatacentersIndexContainer} />
+          <Route path="datacenters/:datacenter_id" component={DatacentersShowContainer}/>
         </Route>
       </Router>
     );

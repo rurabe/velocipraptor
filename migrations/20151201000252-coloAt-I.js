@@ -5,7 +5,7 @@ var DATA = [['Colo@','66.187/16']];
 
 var unassign = function(arr){
   return arr.map(function(un){
-    return "SELECT id FROM unassign('"+un[0]+"','"+un[1]+"');";
+  	return `SELECT id FROM unassign((select id from datacenters where name = '${un[0]}'),'${un[1]}');`
   }).join(" ");
 }
 

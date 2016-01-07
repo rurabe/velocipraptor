@@ -24,13 +24,13 @@ var e = function(v){
 
 var insertDatacenters = function(datacenters){
   var values = datacenters.map(function(datacenter){
-    return `(${e(datacenter[0])},${e(datcenter[1])},now(),now())`;
+    return `(${e(datacenter[0])},${e(datacenter[1])},now(),now())`;
   }).join(",");
   return `insert into datacenters(name,location,created_at,updated_at) values ${values};`;
 };
 
 exports.up = function(db, callback) {
-  db.runSql(insertServers(DATA),callback);
+  db.runSql(insertDatacenters(DATA),callback);
 };
 
 exports.down = function(db, callback) {

@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION populate_addresses() RETURNS trigger AS $$
   DECLARE 
     ip inet;
   BEGIN
-    FOR ip IN SELECT * from spread_ips(NEW.range) LOOP
+    FOR ip IN SELECT * from spread_ips(NEW.ips) LOOP
       BEGIN
         INSERT INTO addresses(ip) VALUES (ip);
       EXCEPTION WHEN unique_violation THEN

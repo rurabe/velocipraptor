@@ -475,7 +475,7 @@ var DATA = [
   ['204.239.214.0/23','XNS','12/17/2015','3/16/2016'],
 ];
 
-var insertLeases = function(ranges){
+var insertRanges = function(ranges){
   var values = ranges.map(function(range){
     let note = range[4] ? `'${range[4]}'` : 'NULL';
     return `('${range[0]}','${range[1]}', ${note},now(),now())`
@@ -488,5 +488,5 @@ exports.up = function(db, callback) {
 };
 
 exports.down = function(db, callback) {
-  db.runSql("DELETE from addresses; DELETE from leases;",callback)
+  db.runSql("DELETE from addresses; DELETE from ranges;",callback)
 };

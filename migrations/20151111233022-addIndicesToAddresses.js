@@ -12,7 +12,7 @@ exports.up = function(db, callback) {
 exports.down = function(db, callback) {
   db.runSql("DROP INDEX IF EXISTS index_gist_ip_on_addresses;",function(){
     db.runSql("DROP INDEX IF EXISTS index_server_id_on_addresses;",function(){
-      db.runSql("DROP INDEX IF EXISTS index_ip_on_adresses;",callback)
+      db.runSql("DROP INDEX IF EXISTS index_ip_on_addresses;",callback)
     });
   });
 };

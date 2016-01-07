@@ -2,6 +2,7 @@
 
 const React = require('react');
 const B = require('react-bootstrap');
+const {Link} = require('react-router');
 
 const Navbar  = React.createClass({
 	render: function(){
@@ -9,7 +10,7 @@ const Navbar  = React.createClass({
       <B.Navbar>
         <B.Navbar.Header>
           <B.Navbar.Brand>
-            <a>Velocipraptor</a>
+            <Link to="/">Velocipraptor</Link>
           </B.Navbar.Brand>
           <B.Navbar.Toggle />
         </B.Navbar.Header>

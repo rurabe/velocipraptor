@@ -109,17 +109,26 @@ $$;
 
 
 --
--- Name: unassign(text, inet); Type: FUNCTION; Schema: public; Owner: -
+-- Name: timestamp_on_change(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION unassign(text, inet) RETURNS SETOF server_assignments
+CREATE FUNCTION timestamp_on_change() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$ begin new.created_at = coalesce(new.created_at,now()); new.updated_at = now(); return new; end $$;
+
+
+--
+-- Name: unassign(integer, inet); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION unassign(integer, inet) RETURNS SETOF server_assignments
     LANGUAGE plpgsql
     AS $_$
   DECLARE
     address addresses;
     assignment server_assignments;
   BEGIN
-    FOR address IN SELECT * FROM addresses INNER JOIN servers on addresses.server_id = servers.id WHERE servers.datacenter = $1 AND addresses.ip <<= $2 LOOP
+    FOR address IN SELECT * FROM addresses INNER JOIN servers on addresses.server_id = servers.id WHERE servers.datacenter_id = $1 AND addresses.ip <<= $2 LOOP
       INSERT INTO server_assignments(address_id,server_id,assigned,active,created_at) VALUES (address.id,address.server_id,FALSE,FALSE,now()) RETURNING * INTO assignment;
       RETURN NEXT assignment;
     END LOOP;
@@ -176,15 +185,14 @@ ALTER SEQUENCE addresses_id_seq OWNED BY addresses.id;
 
 
 --
--- Name: leases; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: datacenters; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE leases (
+CREATE TABLE datacenters (
     id integer NOT NULL,
-    range inet,
-    isp text,
-    start_date date,
-    end_date date,
+    name text,
+    location text,
+    defaults jsonb,
     notes text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
@@ -192,10 +200,10 @@ CREATE TABLE leases (
 
 
 --
--- Name: leases_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: datacenters_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE leases_id_seq
+CREATE SEQUENCE datacenters_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -204,10 +212,10 @@ CREATE SEQUENCE leases_id_seq
 
 
 --
--- Name: leases_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: datacenters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE leases_id_seq OWNED BY leases.id;
+ALTER SEQUENCE datacenters_id_seq OWNED BY datacenters.id;
 
 
 --
@@ -261,13 +269,14 @@ CREATE TABLE pulls (
     pw text,
     ticket_type_id text,
     refresh_time real,
-    rotter text,
+    sale_type text,
     search_criteria text,
     search_date timestamp without time zone,
     event_name text,
     event_link text,
     address_id integer,
     server_id integer,
+    success boolean,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -290,6 +299,40 @@ CREATE SEQUENCE pulls_id_seq
 --
 
 ALTER SEQUENCE pulls_id_seq OWNED BY pulls.id;
+
+
+--
+-- Name: ranges; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ranges (
+    id integer NOT NULL,
+    ips inet,
+    isp text,
+    notes text,
+    datacenter_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: ranges_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE ranges_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: ranges_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE ranges_id_seq OWNED BY ranges.id;
 
 
 --
@@ -326,6 +369,7 @@ CREATE TABLE servers (
     code text,
     role text,
     notes text,
+    datacenter_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -361,7 +405,7 @@ ALTER TABLE ONLY addresses ALTER COLUMN id SET DEFAULT nextval('addresses_id_seq
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY leases ALTER COLUMN id SET DEFAULT nextval('leases_id_seq'::regclass);
+ALTER TABLE ONLY datacenters ALTER COLUMN id SET DEFAULT nextval('datacenters_id_seq'::regclass);
 
 
 --
@@ -376,6 +420,13 @@ ALTER TABLE ONLY migrations ALTER COLUMN id SET DEFAULT nextval('migrations_id_s
 --
 
 ALTER TABLE ONLY pulls ALTER COLUMN id SET DEFAULT nextval('pulls_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY ranges ALTER COLUMN id SET DEFAULT nextval('ranges_id_seq'::regclass);
 
 
 --
@@ -401,11 +452,11 @@ ALTER TABLE ONLY addresses
 
 
 --
--- Name: leases_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: datacenters_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY leases
-    ADD CONSTRAINT leases_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY datacenters
+    ADD CONSTRAINT datacenters_pkey PRIMARY KEY (id);
 
 
 --
@@ -422,6 +473,14 @@ ALTER TABLE ONLY migrations
 
 ALTER TABLE ONLY pulls
     ADD CONSTRAINT pulls_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ranges_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY ranges
+    ADD CONSTRAINT ranges_pkey PRIMARY KEY (id);
 
 
 --
@@ -462,10 +521,10 @@ CREATE INDEX index_code_on_servers ON servers USING btree (code);
 
 
 --
--- Name: index_datacenter_on_servers; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_datacenter_id_on_servers; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_datacenter_on_servers ON servers USING btree (datacenter);
+CREATE INDEX index_datacenter_id_on_servers ON servers USING btree (datacenter_id);
 
 
 --
@@ -549,14 +608,42 @@ CREATE INDEX index_server_on_pulls ON pulls USING btree (server);
 -- Name: index_thread_log_id_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_thread_log_id_on_pulls ON pulls USING btree (thread_log_id);
+CREATE UNIQUE INDEX index_thread_log_id_on_pulls ON pulls USING btree (thread_log_id);
+
+
+--
+-- Name: timestamps_on_addresses; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER timestamps_on_addresses BEFORE INSERT OR UPDATE ON addresses FOR EACH ROW EXECUTE PROCEDURE timestamp_on_change();
+
+
+--
+-- Name: timestamps_on_datacenters; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER timestamps_on_datacenters BEFORE INSERT OR UPDATE ON datacenters FOR EACH ROW EXECUTE PROCEDURE timestamp_on_change();
+
+
+--
+-- Name: timestamps_on_ranges; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER timestamps_on_ranges BEFORE INSERT OR UPDATE ON ranges FOR EACH ROW EXECUTE PROCEDURE timestamp_on_change();
+
+
+--
+-- Name: timestamps_on_servers; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER timestamps_on_servers BEFORE INSERT OR UPDATE ON servers FOR EACH ROW EXECUTE PROCEDURE timestamp_on_change();
 
 
 --
 -- Name: trigger_populate_addresses; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trigger_populate_addresses AFTER INSERT ON leases FOR EACH ROW EXECUTE PROCEDURE populate_addresses();
+CREATE TRIGGER trigger_populate_addresses AFTER INSERT ON ranges FOR EACH ROW EXECUTE PROCEDURE populate_addresses();
 
 
 --

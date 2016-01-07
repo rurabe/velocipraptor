@@ -10,7 +10,7 @@ exports.up = function(db, callback) {
     created_at: { type: 'timestamp', default: 'now()'},
     updated_at: { type: 'timestamp', default: 'now()'},
   },() => {
-    db.runSql("create trigger timestamps_on_addresses before insert or update on addresses for each row execute procedure timestamp_on_change();")
+    db.runSql("create trigger timestamps_on_addresses before insert or update on addresses for each row execute procedure timestamp_on_change();",callback)
   });
 };
 
