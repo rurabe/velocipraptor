@@ -5,6 +5,7 @@ var type = dbm.dataType;
 
 var DATA = [
   ['PhoenixNap','Phoenix'],
+  ['PhoenixNap','Ashburn'],
   ['VPS','Ashburn'],
   ['VPS','Phoenix'],
   ['VPS Colo@','Ashburn'],

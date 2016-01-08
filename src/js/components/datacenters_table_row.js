@@ -6,7 +6,7 @@ const DatacentersTableRow = React.createClass({
     let dc = this.props.datacenter.toJSON();
     return (
       <tr data-id={dc.id}>
-        <td><Link to={`/datacenters/${dc.id}`}>{dc.name}</Link></td>
+        <td><Link to={`/datacenters/${dc.id}/`}>{dc.name}</Link></td>
         <td>{dc.location}</td>
       </tr>
     )

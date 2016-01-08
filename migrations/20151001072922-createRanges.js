@@ -7,7 +7,6 @@ exports.up = function(db, callback) {
   db.createTable('ranges',{
     id:            { type: 'int', autoIncrement: true, primaryKey: true },
     ips:           { type: 'inet' },
-    isp:           { type: 'text' },
     notes:         { type: 'text' },
     datacenter_id: { type: 'int' },
     created_at:    { type: 'timestamp', default: 'now()'},

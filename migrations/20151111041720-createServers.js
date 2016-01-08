@@ -8,8 +8,6 @@ exports.up = function(db, callback) {
     port:          { type: 'int' },
     username:      { type: 'text' },
     password:      { type: 'text' },
-    datacenter:    { type: 'text' },
-    location:      { type: 'text' },
     code:          { type: 'text' },
     role:          { type: 'text' },
     notes:         { type: 'text' },
