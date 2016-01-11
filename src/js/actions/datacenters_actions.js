@@ -8,11 +8,6 @@ const DatacentersActions = {
     return new Promise(function(resolve,reject){
       request.get('/api/datacenters').query(query).end(_dr.bind(this,'datacenters.state',resolve,reject))
     });
-  },
-  get: function(id){
-    return new Promise(function(resolve,reject){
-      request.get(`/api/datacenters/${id}`).end(_dr.bind(this,'datacenters.merge',resolve,reject))
-    })
   }
 };
 

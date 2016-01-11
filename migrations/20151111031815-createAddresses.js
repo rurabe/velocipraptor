@@ -7,6 +7,7 @@ exports.up = function(db, callback) {
     ip:         { type: 'inet' },
     notes:      { type: 'text' },
     server_id:  { type: 'int' },
+    range_id:   { type: 'int' },
     created_at: { type: 'timestamp', default: 'now()'},
     updated_at: { type: 'timestamp', default: 'now()'},
   },() => {

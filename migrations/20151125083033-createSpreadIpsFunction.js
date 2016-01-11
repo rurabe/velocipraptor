@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION populate_addresses() RETURNS trigger AS $$
   BEGIN
     FOR ip IN SELECT * from spread_ips(NEW.ips) LOOP
       BEGIN
-        INSERT INTO addresses(ip) VALUES (ip);
+        INSERT INTO addresses(ip,range_id) VALUES (ip,NEW.id);
       EXCEPTION WHEN unique_violation THEN
         -- nothing, address already exists
       END;

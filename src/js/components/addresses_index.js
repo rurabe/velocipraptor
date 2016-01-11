@@ -1,7 +1,7 @@
 const React = require('react');
 
 const {Row,Col} = require('react-bootstrap');
-const AddressesTable = require('./addresses_table');
+const AddressesTable = require('./addresses__data_table');
 const AddressesChartModule = require('./addresses_chart_module');
 
 const AddressesIndex = React.createClass({

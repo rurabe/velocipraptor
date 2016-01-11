@@ -6,7 +6,7 @@ const RangesTableRow = React.createClass({
     let r = this.props.range.toJSON();
     return (
       <tr data-id={r.id}>
-        <td><Link to={`ranges/${r.id}/`}>{r.ips}</Link></td>
+        <td><Link to={`/datacenters/${this.props.datacenterId}/ranges/${r.id}/`}>{r.ips}</Link></td>
       </tr>
     )
   }

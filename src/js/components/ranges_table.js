@@ -5,8 +5,10 @@ const RangesTableRow = require('./ranges_table_row');
 
 const RangesTable = React.createClass({
   render: function(){
+    let datacenterId = this.props.datacenter.get('id');
+
     let rows = this.props.ranges.map( r => {
-      return <RangesTableRow range={r} key={r.get('id')}/>
+      return <RangesTableRow range={r} key={r.get('id')} datacenterId={datacenterId}/>
     });
 
     return (

@@ -29,7 +29,7 @@ class DatacentersShowContainer extends React.Component {
 
   componentDidMount(){
     let datacenter_id = this.props.routeParams.datacenter_id;
-    DatacentersActions.get(datacenter_id);
+    DatacentersActions.index({id: datacenter_id});
     RangesActions.index({datacenter_id: datacenter_id});
   }
 

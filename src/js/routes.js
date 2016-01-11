@@ -15,14 +15,14 @@ const Routes = {
     //   /logout
     Passport.routes(app);
 
+    app.get("/datacenters/:datacenter_id/ranges/:id",IndexController.index);
     app.get("/datacenters/:id/",IndexController.index)
     app.get("/",IndexController.index);
 
 
     app.get('/api/addresses',AddressesController.index);
     app.get('/api/datacenters',DatacentersController.index);
-    app.get('/api/datacenters/:id',DatacentersController.get);
-    app.get("/api/ranges",RangesController.index);
+    app.get('/api/ranges',RangesController.index);
   }
 };
 

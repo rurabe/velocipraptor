@@ -17,7 +17,7 @@ const DatacentersShow = React.createClass({
         </Row>
         <Row>
           <Col md={6}>
-            <RangesTable ranges={this.props.ranges} />
+            <RangesTable ranges={this.props.ranges} datacenter={this.props.datacenter}/>
           </Col>
         </Row>
       </div>
