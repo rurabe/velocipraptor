@@ -5,6 +5,11 @@ const DatacentersController = {
     Datacenters.where(req.query).then( datacenters => {
       res.json(Object.assign({},req.query,{datacenters: datacenters}));
     });
+  },
+  update: function(req,res){
+    Datacenters.update(req.params.id,req.body.update).then(datacenters => {
+      res.json(Object.assign({},req.query,{datacenters: datacenters}));
+    })
   }
 };
 

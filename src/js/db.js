@@ -6,6 +6,7 @@ const squel = require('squel').useFlavour('postgres');
 const pgAddress = process.env.DATABASE_URL;
 
 const _query = function(preparedStatement){
+  console.log(preparedStatement)
   return new Promise(function(resolve,reject){
     pg.connect(pgAddress,function(err,client,done){
       client.query(preparedStatement,function(e,r){

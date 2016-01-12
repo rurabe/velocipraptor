@@ -9,7 +9,6 @@ const Ranges = {
     return DB.query(this.select().where("id = ?",id).toParam()).then(rows => rows[0].json);
   },
   where: function(params){
-    console.log(this.select(params).toParam())
     return DB.query(this.select(params).toParam()).then(rows => rows[0].json);
   },
   select: function(params){

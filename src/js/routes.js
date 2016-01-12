@@ -8,8 +8,11 @@ const ServersController = require('./controllers/servers_controller');
 
 const Passport = require('./config/passport');
 
+const bp = require('body-parser');
+
 const Routes = {
   init: function(app){
+    app.use(bp.json({ type: 'application/json' }))
     // passport login functions: 
     //   /auth/google
     //   /auth/google/callback
@@ -22,8 +25,12 @@ const Routes = {
 
 
     app.get('/api/addresses',AddressesController.index);
+
     app.get('/api/datacenters',DatacentersController.index);
+    app.put('/api/datacenters/:id',DatacentersController.update);
+    
     app.get('/api/ranges',RangesController.index);
+    
     app.get('/api/servers',ServersController.index);
   }
 };

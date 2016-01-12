@@ -1,18 +1,20 @@
 const React = require('react');
 const {Link} = require('react-router');
 
+const EditableTableCell = require('./editable_table_cell');
+
+const DatacentersActions = require('../actions/datacenters_actions');
+
 const DatacentersTableRow = React.createClass({
   render: function(){
     let dc = this.props.datacenter.toJSON();
+    let onUpdate = DatacentersActions.update.bind(this,dc.id);
     return (
       <tr data-id={dc.id}>
-        <td onDoubleClick={this._onDoubleClick}><Link to={`/datacenters/${dc.id}/`}>{dc.name}</Link></td>
-        <td>{dc.location}</td>
+        <EditableTableCell value={dc.name} attr='name' onUpdate={onUpdate} link={`/datacenters/${dc.id}/`} />
+        <EditableTableCell value={dc.location} attr='location' onUpdate={onUpdate}/>
       </tr>
     )
-  },
-  _onDoubleClick: function(e){
-    console.log(this.props.datacenter.toJSON())
   }
 });
 
