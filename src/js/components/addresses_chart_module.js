@@ -10,10 +10,10 @@ const AddressesChartModule = React.createClass({
 
     return (
       <Row>
-        <Col md={9}>
+        <Col md={10}>
           <AddressesChart pulls={pulls} startDate={this.props.startDate} endDate={this.props.endDate} />
         </Col>
-        <Col md={3}>
+        <Col md={2}>
           <ChartStats pulls={pulls} />
           <Row>
             <Col md={12}>

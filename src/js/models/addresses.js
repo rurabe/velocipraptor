@@ -32,6 +32,7 @@ const Addresses = {
       let pulls = squel.select().from("pulls")
         .field("coalesce(json_object_agg(pulls.id,json_build_object('id',pulls.id,'search_date',extract(epoch from pulls.search_date),'success',pulls.success)),'{}'::json)")
         .where("pulls.address_id = addresses.id")
+        .where("pulls.search_date > (now() - interval '1 month')")
       q.field(pulls,"pulls")
     }).then( json => _calculateStatistics(json) );
   },

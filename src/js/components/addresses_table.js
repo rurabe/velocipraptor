@@ -16,7 +16,7 @@ const AddressesTable = React.createClass({
 
     return (
       <table className="table table-condensed table-striped">
-        <TableHead columns={['ip','notes','server']} />
+        <TableHead columns={['ip','threads','successes','success rate','notes','server']} />
         <tbody>
           {rows}
         </tbody>

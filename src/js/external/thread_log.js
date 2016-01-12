@@ -79,7 +79,7 @@ const _parseSuccess = function(row){
 const ThreadLog = {
   getLatest: function(){
     return DB.query('select thread_log_id from pulls order by thread_log_id desc limit 1').then(results => {
-      return results[0] ? results[0].thread_log_id : 120000; 
+      return results[0] ? results[0].thread_log_id : 0; 
     }).then( lastId => {
       let q = squel.select('*').from('ThreadLog').where('id > ?',lastId).order('id').limit(100);
       return _query(q.toParam().text,q.toParam().values);

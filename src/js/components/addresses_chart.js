@@ -10,7 +10,7 @@ const AddressesChart = React.createClass({
     let svg = rfd.createElement('svg');
 
     let margin = {top: 10, right: 50, bottom: 20, left: 50};
-    let width = 877 - margin.left - margin.right;
+    let width = 975 - margin.left - margin.right;
     let height = 400 - margin.top - margin.bottom;
 
     let data = this.props.pulls
@@ -27,7 +27,7 @@ const AddressesChart = React.createClass({
         return pulls;
       }).sortBy( (pulls) => pulls.date ).toArray();
 
-    console.log(data)
+    // console.log(data)
 
     let chart = d3.select(svg)
       .attr('width',width + margin.left + margin.right)
@@ -36,12 +36,11 @@ const AddressesChart = React.createClass({
       .attr("class","viewport")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    let startDate = moment(d3.min(data,d => d.date));
-    let endDate = moment(d3.max(data,d => d.date));
+    let startDate = moment(d3.min(data,d => d.date)).add(-1,'days');
+    let endDate = moment(d3.max(data,d => d.date)).add(1,'days');
     let days = (startDate && endDate) ? endDate.diff(startDate,'days') : 1;
-    console.log(days)
 
-    let x = d3.time.scale().domain([startDate,endDate]).range([0,width]);
+    let x = d3.time.scale().domain([startDate,endDate]).rangeRound([0,width]);
     let xAxis = d3.svg.axis().scale(x).orient('bottom').ticks(d3.time.days, 2).tickFormat(d3.time.format('%-m/%-d'));
 
     let ySucc = d3.scale.linear().domain([0, 100]).range([height,0]);
