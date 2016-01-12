@@ -11,6 +11,7 @@ const AddressesStore = require('../stores/addresses_store');
 const DatacentersActions = require('../actions/datacenters_actions');
 const RangesActions = require('../actions/ranges_actions');
 const AddressesActions = require('../actions/addresses_actions');
+const PullsActions = require('../actions/pulls_actions');
 
 const RangesShow = require('./ranges_show');
 
@@ -27,7 +28,6 @@ class RangesShowContainer extends React.Component {
     let datacenter = DatacentersStore.get(datacenter_id.toString());
     let range = RangesStore.get(range_id.toString());
     let addresses = AddressesStore.getState().filter( a => a.get('range_id') === range_id ).sortBy(a => a.get('ip'))
-
     return {
       datacenter: datacenter,
       range: range,
@@ -53,6 +53,6 @@ class RangesShowContainer extends React.Component {
   }
 }
 
-window.AddressesStore = AddressesStore
+window.AddressesStore = AddressesStore;
 
 module.exports = Container.create(RangesShowContainer,{withProps: true});

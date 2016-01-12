@@ -3,6 +3,7 @@ const React = require('react');
 const {Row,Col} = require('react-bootstrap');
 
 const AddressesTable = require('./addresses_table');
+const AddressesChartModule = require('./addresses_chart_module');
 
 const RangesShow = React.createClass({
   render: function(){
@@ -12,6 +13,11 @@ const RangesShow = React.createClass({
         <Row>
           <Col md={12}>
             <h1>{r.ips}</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <AddressesChartModule addresses={this.props.addresses}/>
           </Col>
         </Row>
         <Row>

@@ -25,15 +25,25 @@ const countObj = function(obj,criteria){
   return i;
 };
 
+
 const Addresses = {
-  where: function(params){
-    return DB.query(this.select(params).toParam()).then( rows => _calculateStatistics(rows[0].json) )
+  withPulls: function(params){
+    return this.where(params, q => {
+      let pulls = squel.select().from("pulls")
+        .field("coalesce(json_object_agg(pulls.id,json_build_object('id',pulls.id,'search_date',extract(epoch from pulls.search_date),'success',pulls.success)),'{}'::json)")
+        .where("pulls.address_id = addresses.id")
+      q.field(pulls,"pulls")
+    }).then( json => _calculateStatistics(json) );
   },
-  select: function(params){
+  where: function(params,mutator){
+    return DB.query(this.select(params,mutator).toParam()).then(rows => rows[0].json);
+  },
+  select: function(params,mutator){
     let q = squel.select()
       .field("addresses.id,addresses.ip,addresses.server_id,addresses.range_id")
-      .from("addresses");
+      .from("addresses")
       QueryHelpers.filter(q,params);
+      if(mutator){ mutator(q) }
     return squel.select().field("coalesce(json_object_agg(a.id,a),'{}'::json)",'json').from(q,'a');
   }
 };

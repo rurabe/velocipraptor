@@ -7,7 +7,6 @@ const TimeHelpers = require('../helpers/time_helpers');
 
 const AddressesChart = React.createClass({
   render: function(){
-    console.log(this.props)
     let svg = rfd.createElement('svg');
 
     let margin = {top: 10, right: 50, bottom: 20, left: 50};
@@ -37,13 +36,13 @@ const AddressesChart = React.createClass({
       .attr("class","viewport")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    let format = "M/D"
-    let startDate = TimeHelpers.pt(this.props.startDate);
-    let endDate = TimeHelpers.pt(this.props.endDate);
-    let xDomain = TimeHelpers.ordinalDates(startDate,endDate,format);
+    let startDate = moment(d3.min(data,d => d.date));
+    let endDate = moment(d3.max(data,d => d.date));
+    let days = (startDate && endDate) ? endDate.diff(startDate,'days') : 1;
+    console.log(days)
 
-    let x = d3.scale.ordinal().domain(xDomain).rangeRoundBands([0, width], 0.8);
-    let xAxis = d3.svg.axis().scale(x).orient('bottom');
+    let x = d3.time.scale().domain([startDate,endDate]).range([0,width]);
+    let xAxis = d3.svg.axis().scale(x).orient('bottom').ticks(d3.time.days, 2).tickFormat(d3.time.format('%-m/%-d'));
 
     let ySucc = d3.scale.linear().domain([0, 100]).range([height,0]);
     let ySuccAxis = d3.svg.axis().scale(ySucc).orient("right")
@@ -53,7 +52,7 @@ const AddressesChart = React.createClass({
     let yCountAxis = d3.svg.axis().scale(yCount).orient("left")
 
     let succRateData = d3.svg.line()
-      .x( d => x( TimeHelpers.pt(d.date).format(format) ) + x.rangeBand()/2 )
+      .x( d => x( d.date ) )
       .y( d => ySucc(d.success_rate) )
       .interpolate("linear");
                          
@@ -68,16 +67,18 @@ const AddressesChart = React.createClass({
       .attr("fill", "none")
       .attr("stroke-width",2)
 
+    let barWidth = (width / (days * 4));
+
     date.append("rect")
-      .attr('width',x.rangeBand())
-      .attr('x', d => x( TimeHelpers.pt(d.date).format(format) ))
+      .attr('width', barWidth )
+      .attr('x', d => x( d.date ) - barWidth / 2 )
       .attr('y', d => yCount(d.pulls) )
       .attr('height', d => height - yCount(d.pulls) )
 
 
     date.append("circle")
       .attr("r", 5)
-      .attr("cx", (d,i) => x( TimeHelpers.pt(d.date).format(format) ) + x.rangeBand()/2 )
+      .attr("cx", (d,i) => x( d.date ) )
       .attr("cy", (d,i) => ySucc(d.success_rate) )
       .attr("data-rate", (d,i) => d.success_rate )
 
