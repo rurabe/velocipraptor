@@ -6,10 +6,13 @@ const DatacentersTableRow = React.createClass({
     let dc = this.props.datacenter.toJSON();
     return (
       <tr data-id={dc.id}>
-        <td><Link to={`/datacenters/${dc.id}/`}>{dc.name}</Link></td>
+        <td onDoubleClick={this._onDoubleClick}><Link to={`/datacenters/${dc.id}/`}>{dc.name}</Link></td>
         <td>{dc.location}</td>
       </tr>
     )
+  },
+  _onDoubleClick: function(e){
+    console.log(this.props.datacenter.toJSON())
   }
 });
 

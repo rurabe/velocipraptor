@@ -1,19 +1,19 @@
 const React = require('react');
 
 const TableHead = require('./table_head');
-const RangesTableRow = require('./ranges_table_row');
+const ServersTableRow = require('./servers_table_row');
 
-const RangesTable = React.createClass({
+const ServersTable = React.createClass({
   render: function(){
     let datacenterId = this.props.datacenter.get('id');
 
-    let rows = this.props.ranges.map( r => {
-      return <RangesTableRow range={r} key={r.get('id')} datacenterId={datacenterId}/>
+    let rows = this.props.servers.map( s => {
+      return <ServersTableRow server={s} key={s.get('id')} datacenterId={datacenterId}/>
     });
 
     return (
       <table className="table table-condensed table-striped table-bordered">
-        <TableHead columns={['range']} />
+        <TableHead columns={['id','code','ip']} />
         <tbody>
           {rows}
         </tbody>
@@ -22,4 +22,4 @@ const RangesTable = React.createClass({
   }
 });
 
-module.exports = RangesTable;
+module.exports = ServersTable;
