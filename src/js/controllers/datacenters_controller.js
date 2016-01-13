@@ -7,7 +7,7 @@ const DatacentersController = {
     });
   },
   create: function(req,res){
-    Datacenters.create().then( datacenters => {
+    Datacenters.create(req.body.datacenter).then( datacenters => {
       res.json(Object.assign({},req.query,{datacenters: datacenters}));
     });
   },

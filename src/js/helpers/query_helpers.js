@@ -24,7 +24,7 @@ const QueryHelpers = {
     return `with ${a} ${final[1].toString()};`;
   },
   jsonize: function(rows){
-    return rows.reduce( (a,r) => { a[r.id] = r; return a },{})
+    return rows.reduce( (a,r) => { a[r.id] = r; return a },{});
   }
 };
 

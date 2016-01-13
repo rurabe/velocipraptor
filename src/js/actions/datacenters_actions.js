@@ -9,9 +9,9 @@ const DatacentersActions = {
       request.get('/api/datacenters').query(query).end(_dr.bind(this,'datacenters.state',resolve,reject))
     });
   },
-  create: function(){
+  create: function(params){
     return new Promise(function(resolve,reject){
-      request.post('/api/datacenters').end(_dr.bind(this,'datacenters.merge',resolve,reject))
+      request.post('/api/datacenters').send({datacenter: params}).end(_dr.bind(this,'datacenters.merge',resolve,reject))
     });
   },
   update: function(id,update){

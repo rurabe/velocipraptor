@@ -4,10 +4,7 @@ const DB = require('../db');
 const moment = require('moment-timezone');
 
 const QueryHelpers = require('../helpers/query_helpers');
-const _jsonize = function(q){
-  return squel.select().field("coalesce(json_object_agg(t.id,t),'{}'::json)",'json').from(q,'t');
-}
-
+const _jsonize = QueryHelpers.jsonize;
 const _fields = "addresses.id,addresses.ip,addresses.server_id,addresses.range_id,addresses.notes"
 
 const _pulls = squel.select().from("pulls")
@@ -37,19 +34,16 @@ const countObj = function(obj,criteria){
 
 
 const Addresses = {
-  where: function(params,mutator){
-    return DB.query(this.select(params,mutator).toParam()).then(rows => _calculateStatistics(rows[0].json));
+  where: function(params){
+    return DB.query(this.select(params).toParam()).then(_jsonize).then(_calculateStatistics);
   },
-  select: function(params,mutator){
+  select: function(params){
     let q = squel.select().from("addresses").field(_fields).field(_pulls,"pulls")
-    QueryHelpers.filter(q,params);
-    if(mutator){ mutator(q) }
-    return _jsonize(q);
+    return QueryHelpers.filter(q,params);
   },
   update: function(id,update){
-    let q = squel.update().table("addresses").where("id = ?",id).returning(_fields);
-    QueryHelpers.set(q,update);
-    return DB.query(q.toParam()).then(rows => this.where({id: id}) );
+    let u = QueryHelpers.set(squel.update().table("addresses").where("id = ?",id).returning(_fields),update);
+    return DB.query(u.toParam()).then(_jsonize);
   }
 };
 

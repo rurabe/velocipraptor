@@ -16,14 +16,14 @@ const DatacentersTableRow = React.createClass({
         <EditableTableCell value={dc.name} attr='name' onUpdate={onUpdate} link={`/datacenters/${dc.id}/`} />
         <EditableTableCell value={dc.location} attr='location' onUpdate={onUpdate}/>
         <EditableTableCell value={dc.notes} attr='notes' onUpdate={onUpdate}/>
-        <td className="datacenters-actions actions">
+        <td className="datacenters-table-actions table-actions">
           <ActionIcon icon="times" onClick={this._destroy.bind(this,dc.id,dc.name)}/>
         </td>
       </tr>
     )
   },
   _destroy: function(id,name,e){
-    if(confirm(`Are you sure you want to delete ${name}(${id})`)){
+    if(confirm(`Are you sure you want to delete ${name}(${id})?`)){
       DatacentersActions.destroy(id);
     }
   }

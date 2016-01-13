@@ -17,6 +17,8 @@ const AddressesTableRow = React.createClass({
         <td>{rate ? (rate * 100).toFixed(1)  : null }</td>
         <td>{a.server_id}</td>
         <EditableTableCell value={a.notes} attr='notes' onUpdate={onUpdate}/>
+        <td className="addresses-table-actions table-actions">
+        </td>
       </tr>
     )
   }

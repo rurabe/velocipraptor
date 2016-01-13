@@ -14,6 +14,8 @@ const RangesTableRow = React.createClass({
         <td>{r.id}</td>
         <td><Link to={`/datacenters/${this.props.datacenterId}/ranges/${r.id}/`}>{r.ips}</Link></td>
         <EditableTableCell value={r.notes} attr='notes' onUpdate={onUpdate}/>
+        <td className="ranges-table-actions table-actions">
+        </td>
       </tr>
     );
   }

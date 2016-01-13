@@ -36,7 +36,9 @@ const Routes = {
     app.put('/api/ranges/:id',RangesController.update);
     
     app.get('/api/servers',ServersController.index);
+    app.post('/api/servers',ServersController.create);
     app.put('/api/servers/:id',ServersController.update);
+    app.delete('/api/servers/:id',ServersController.destroy);
   }
 };
 

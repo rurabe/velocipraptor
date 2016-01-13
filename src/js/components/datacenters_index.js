@@ -20,7 +20,7 @@ const DatacentersIndex = React.createClass({
           <Col md={12}>
             <h1>Datacenters</h1>
             <div className="datacenters-actions">
-              <button className="btn btn-success" onClick={DatacentersActions.create}>Add Datacenter</button>
+              <button className="btn btn-success" onClick={this._createDatacenter}>Add Datacenter</button>
             </div>
           </Col>
         </Row>
@@ -31,6 +31,9 @@ const DatacentersIndex = React.createClass({
         </Row>
       </div>
     );
+  },
+  _createDatacenter: function(){
+    DatacentersActions.create({})
   }
 });
 

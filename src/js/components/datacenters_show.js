@@ -7,6 +7,8 @@ const Breadcrumbs = require('./breadcrumbs');
 const RangesTable = require('./ranges_table');
 const ServersTable = require('./servers_table');
 
+const ServersActions = require('../actions/servers_actions');
+
 const DatacentersShow = React.createClass({
   render: function(){
     let dc = this.props.datacenter.toJSON();
@@ -36,12 +38,16 @@ const DatacentersShow = React.createClass({
           <Col md={6}>
             <h4>Servers</h4>
             <div className="servers-actions">
+              <button className="btn btn-sm btn-success" onClick={this._createServer}>Add Server</button>
             </div>
             <ServersTable servers={this.props.servers} datacenter={this.props.datacenter}/>
           </Col>
         </Row>
       </div>
     );
+  },
+  _createServer: function(){
+    ServersActions.create({datacenter_id: this.props.datacenter.get('id')});
   }
 });
 

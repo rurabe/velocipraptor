@@ -3,29 +3,29 @@ const squel = require('squel').useFlavour('postgres');
 const DB = require('../db');
 
 const QueryHelpers = require('../helpers/query_helpers');
+const _jsonize = QueryHelpers.jsonize;
 const _fields = "servers.id,servers.ip,servers.code,servers.notes,servers.datacenter_id";
 
-const _jsonize = function(q){
-  return squel.select().field("coalesce(json_object_agg(t.id,t),'{}'::json)",'json').from(q,'t');
-}
-
-
 const Servers = {
-  where: function(params,mutator){
-    return DB.query(this.select(params,mutator).toParam()).then(rows => rows[0].json);
+  where: function(params){
+    return DB.query(this.select(params).toParam()).then(_jsonize);
   },
-  select: function(params,mutator){
+  select: function(params){
     let q = squel.select().field(_fields).from("servers");
-      QueryHelpers.filter(q,params);
-      if(mutator){ mutator(q) }
-    return _jsonize(q);
+    return QueryHelpers.filter(q,params);
+  },
+  create: function(params){
+    params = Object.assign({created_at: 'now()'},params)
+    let i = squel.insert().into("servers").setFields(params).returning(_fields);
+    return DB.query(i.toParam()).then(_jsonize);
   },
   update: function(id,update){
-    let q = squel.update().table("servers").where("id = ?",id).returning(_fields);
-    QueryHelpers.set(q,update);
-    return DB.query(QueryHelpers.cte([
-      ['u',q],[null,_jsonize('u')]]
-    )).then(rows => rows[0].json);
+    let u = QueryHelpers.set(squel.update().table("servers").where("id = ?",id).returning(_fields),update);
+    return DB.query(u.toParam()).then(_jsonize);
+  },
+  destroy: function(id){
+    let q = squel.delete().from("servers").where("id = ?",id).returning(_fields);
+    return DB.query(q.toParam()).then(_jsonize);
   }
 };
 
