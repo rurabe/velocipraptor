@@ -21,6 +21,12 @@ const Datacenters = {
     if(mutator){ mutator(q) }
     return _jsonize(q);
   },
+  create: function(){
+    let i = squel.insert().into("datacenters").set("created_at","now()").returning(_fields);
+    return DB.query(QueryHelpers.cte([
+      ['i',i],[null,_jsonize('i')]]
+    )).then(rows => rows[0].json);
+  },
   update: function(id,update){
     let q = squel.update().table("datacenters").where("id = ?",id).returning(_fields);
     QueryHelpers.set(q,update);

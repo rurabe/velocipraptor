@@ -28,6 +28,7 @@ const Routes = {
     app.put('/api/addresses/:id',AddressesController.update);
 
     app.get('/api/datacenters',DatacentersController.index);
+    app.post('/api/datacenters',DatacentersController.create);
     app.put('/api/datacenters/:id',DatacentersController.update);
     
     app.get('/api/ranges',RangesController.index);

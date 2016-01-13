@@ -11,6 +11,7 @@ const RangesTableRow = React.createClass({
     let onUpdate = RangesActions.update.bind(this,r.id);
     return (
       <tr data-id={r.id}>
+        <td>{r.id}</td>
         <td><Link to={`/datacenters/${this.props.datacenterId}/ranges/${r.id}/`}>{r.ips}</Link></td>
         <EditableTableCell value={r.notes} attr='notes' onUpdate={onUpdate}/>
       </tr>

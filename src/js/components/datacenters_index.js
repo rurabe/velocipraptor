@@ -5,6 +5,8 @@ const {Row,Col} = require('react-bootstrap');
 const Breadcrumbs = require('./breadcrumbs');
 const DatacentersTable = require('./datacenters_table');
 
+const DatacentersActions = require('../actions/datacenters_actions');
+
 const DatacentersIndex = React.createClass({
   render: function(){
     return (
@@ -17,6 +19,9 @@ const DatacentersIndex = React.createClass({
         <Row>
           <Col md={12}>
             <h1>Datacenters</h1>
+            <div className="datacenters-actions">
+              <button className="btn btn-success" onClick={DatacentersActions.create}>Add Datacenter</button>
+            </div>
           </Col>
         </Row>
         <Row>

@@ -13,7 +13,7 @@ const RangesTable = React.createClass({
 
     return (
       <table className="table table-condensed table-striped table-bordered ranges-table">
-        <TableHead columns={['range','notes']} />
+        <TableHead columns={['id','range','notes']} />
         <tbody>
           {rows}
         </tbody>
