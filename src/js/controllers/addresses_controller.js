@@ -2,7 +2,12 @@ const Addresses = require('../models/Addresses');
 
 const AddressesController = {
   index: function(req,res){
-    Addresses.withPulls(req.query).then( addresses => {
+    Addresses.where(req.query).then( addresses => {
+      res.json(Object.assign({},req.query,{addresses: addresses}));
+    });
+  },
+  update: function(req,res){
+    Addresses.update(req.params.id,req.body.update).then( addresses => {
       res.json(Object.assign({},req.query,{addresses: addresses}));
     });
   },

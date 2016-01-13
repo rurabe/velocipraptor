@@ -25,6 +25,7 @@ const Routes = {
 
 
     app.get('/api/addresses',AddressesController.index);
+    app.put('/api/addresses/:id',AddressesController.update);
 
     app.get('/api/datacenters',DatacentersController.index);
     app.put('/api/datacenters/:id',DatacentersController.update);
@@ -33,7 +34,7 @@ const Routes = {
     app.put('/api/ranges/:id',RangesController.update);
     
     app.get('/api/servers',ServersController.index);
-    app.put('/api/servers/:id',ServersController.update)
+    app.put('/api/servers/:id',ServersController.update);
   }
 };
 
