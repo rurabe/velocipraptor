@@ -13,11 +13,11 @@ const EditableTableCell = React.createClass({
   },
   render: function(){
     if(this.state.editing){
-      return <td onDoubleClick={this._toggleEditing} onBlur={this._onBlur}><input ref="input" onChange={this._onChange} onKeyDown={this._onKeyDown} value={this.state.val} /></td>
+      return <td className="editable-table-cell" onDoubleClick={this._toggleEditing} onBlur={this._onBlur}><textarea ref="input" onChange={this._onChange} onKeyDown={this._onKeyDown} value={this.state.val} /></td>
     } else if(this.props.link) {
-      return <td onDoubleClick={this._toggleEditing}><Link to={this.props.link}>{this.state.val}</Link></td>
+      return <td className="editable-table-cell" onDoubleClick={this._toggleEditing}><Link to={this.props.link}>{this.state.val}</Link></td>
     } else {
-      return <td onDoubleClick={this._toggleEditing}>{this.state.val}</td>
+      return <td className="editable-table-cell" onDoubleClick={this._toggleEditing}>{this.state.val}</td>
     }
   },
   _toggleEditing: function(e){

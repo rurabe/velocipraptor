@@ -10,8 +10,8 @@ const DatacentersTable = React.createClass({
     });
 
     return (
-      <table className="table table-condensed table-striped">
-        <TableHead columns={['Name','Location']} />
+      <table className="table table-condensed table-striped datacenters-table">
+        <TableHead columns={['name','location','notes']} />
         <tbody>
           {rows}
         </tbody>

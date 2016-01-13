@@ -12,8 +12,8 @@ const ServersTable = React.createClass({
     });
 
     return (
-      <table className="table table-condensed table-striped table-bordered">
-        <TableHead columns={['id','code','ip']} />
+      <table className="table table-condensed table-striped table-bordered servers-table">
+        <TableHead columns={['id','code','ip','notes']} />
         <tbody>
           {rows}
         </tbody>

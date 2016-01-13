@@ -30,8 +30,10 @@ const Routes = {
     app.put('/api/datacenters/:id',DatacentersController.update);
     
     app.get('/api/ranges',RangesController.index);
+    app.put('/api/ranges/:id',RangesController.update);
     
     app.get('/api/servers',ServersController.index);
+    app.put('/api/servers/:id',ServersController.update)
   }
 };
 

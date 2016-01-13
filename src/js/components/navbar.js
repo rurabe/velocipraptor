@@ -7,7 +7,7 @@ const {Link} = require('react-router');
 const Navbar  = React.createClass({
 	render: function(){
     return (
-      <B.Navbar>
+      <B.Navbar fluid={true} >
         <B.Navbar.Header>
           <B.Navbar.Brand>
             <Link to="/">Velocipraptor</Link>

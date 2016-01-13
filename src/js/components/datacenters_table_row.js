@@ -13,6 +13,7 @@ const DatacentersTableRow = React.createClass({
       <tr data-id={dc.id}>
         <EditableTableCell value={dc.name} attr='name' onUpdate={onUpdate} link={`/datacenters/${dc.id}/`} />
         <EditableTableCell value={dc.location} attr='location' onUpdate={onUpdate}/>
+        <EditableTableCell value={dc.notes} attr='notes' onUpdate={onUpdate}/>
       </tr>
     )
   }

@@ -9,7 +9,7 @@ const AppLayout = React.createClass({
     return (
       <div id="layout">
         <Navbar user={this.state.user}/>
-        <div className="container">
+        <div className="container-fluid">
           {React.cloneElement(this.props.children,this.state)}
         </div>
       </div>

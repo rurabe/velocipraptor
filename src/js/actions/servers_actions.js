@@ -8,6 +8,11 @@ const ServersActions = {
     return new Promise(function(resolve,reject){
       request.get(`/api/servers`).query(query).end(_dr.bind(this,'servers.merge',resolve,reject))
     });
+  },
+  update: function(id,update){
+    return new Promise(function(resolve,reject){
+      request.put(`/api/servers/${id}`).send({update: update}).end(_dr.bind(this,'servers.merge',resolve,reject))
+    });
   }
 };
 

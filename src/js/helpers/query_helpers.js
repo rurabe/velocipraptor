@@ -1,4 +1,5 @@
 'use strict';
+const squel = require('squel').useFlavour('postgres');
 
 const QueryHelpers = {
   filter: function(query,filters){
@@ -21,6 +22,9 @@ const QueryHelpers = {
       return `${c[0]} as (${c[1].toString()})`
     }).join(", ");
     return `with ${a} ${final[1].toString()};`;
+  },
+  jsonize: function(query){
+    return squel.select().field("coalesce(json_object_agg(t.id,t),'{}'::json)",'json').from(query,'t');
   }
 };
 
