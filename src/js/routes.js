@@ -30,6 +30,7 @@ const Routes = {
     app.get('/api/datacenters',DatacentersController.index);
     app.post('/api/datacenters',DatacentersController.create);
     app.put('/api/datacenters/:id',DatacentersController.update);
+    app.delete('/api/datacenters/:id',DatacentersController.destroy);
     
     app.get('/api/ranges',RangesController.index);
     app.put('/api/ranges/:id',RangesController.update);

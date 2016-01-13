@@ -11,6 +11,7 @@ const TableHead = React.createClass({
       <thead>
         <tr>
           {columns}
+          <th className="actions"></th>
         </tr>
       </thead>
     );

@@ -15,6 +15,11 @@ const DatacentersController = {
     Datacenters.update(req.params.id,req.body.update).then(datacenters => {
       res.json(Object.assign({},req.query,{datacenters: datacenters}));
     })
+  },
+  destroy: function(req,res){
+    Datacenters.destroy(req.params.id).then( datacenters => {
+      res.json(Object.assign({},req.query,{datacenters: datacenters}));
+    })
   }
 };
 

@@ -4,6 +4,20 @@
 
 .datacenters-table,.ranges-table,.servers-table,.addresses-table
   margin-top: 10px
+  thead
+    th.actions
+      width: 5%
+
+  tbody
+    td.actions
+      font-size: 10px
+      text-align: center
+
+      .fa-stack
+        cursor: pointer
+        &:hover
+          .fa-stack-2x
+            color: $brand-primary
 
 .datacenters-table
   thead

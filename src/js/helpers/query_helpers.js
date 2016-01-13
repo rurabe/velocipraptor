@@ -23,8 +23,8 @@ const QueryHelpers = {
     }).join(", ");
     return `with ${a} ${final[1].toString()};`;
   },
-  jsonize: function(query){
-    return squel.select().field("coalesce(json_object_agg(t.id,t),'{}'::json)",'json').from(query,'t');
+  jsonize: function(rows){
+    return rows.reduce( (a,r) => { a[r.id] = r; return a },{})
   }
 };
 

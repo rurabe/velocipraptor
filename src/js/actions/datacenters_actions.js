@@ -18,6 +18,11 @@ const DatacentersActions = {
     return new Promise(function(resolve,reject){
       request.put(`/api/datacenters/${id}`).send({update: update}).end(_dr.bind(this,'datacenters.merge',resolve,reject))
     });
+  },
+  destroy: function(id){
+    return new Promise(function(resolve,reject){
+      request.del(`/api/datacenters/${id}`).end(_dr.bind(this,'datacenters.remove',resolve,reject))
+    });
   }
 };
 
