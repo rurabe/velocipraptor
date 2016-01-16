@@ -44,6 +44,9 @@ const Addresses = {
   update: function(id,update){
     let u = QueryHelpers.set(squel.update().table("addresses").where("id = ?",id).returning(_fields),update);
     return DB.query(u.toParam()).then(_jsonize);
+  },
+  assign: function(ip,serverCode){
+    return DB.query({text: 'SELECT address_id FROM assign($1,$2)', values:[serverCode,ip]});
   }
 };
 

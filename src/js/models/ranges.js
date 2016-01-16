@@ -17,6 +17,11 @@ const Ranges = {
     let q = squel.select().field(_fields).from("ranges");
     return QueryHelpers.filter(q,params);
   },
+  create: function(params){
+    params = Object.assign({created_at: 'now()'},params)
+    let i = squel.insert().into("ranges").setFields(params).returning(_fields);
+    return DB.query(i.toParam()).then(_jsonize);
+  },
   update: function(id,update){
     let u = QueryHelpers.set(squel.update().table("ranges").where("id = ?",id).returning(_fields),update);
     return DB.query(u.toParam()).then(_jsonize);

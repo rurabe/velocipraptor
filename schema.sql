@@ -2,12 +2,16 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 9.5.0
+-- Dumped by pg_dump version 9.5.0
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -30,7 +34,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: server_assignments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: server_assignments; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE server_assignments (
@@ -64,6 +68,28 @@ $_$;
 
 
 --
+-- Name: link_pulls(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION link_pulls() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  DECLARE
+    address_id int;
+    server_id  int;
+  BEGIN
+    select addresses.id into address_id from addresses where host(addresses.ip) = NEW.ip;
+    select servers.id into server_id from servers where host(servers.ip) = substring(NEW.server,'d{1,3}.d{1,3}.d{1,3}.d{1,3}');
+    NEW.address_id = address_id;
+    NEW.server_id = server_id;
+    NEW.created_at = now();
+    NEW.updated_at = now();
+    RETURN NEW;
+  END;
+$$;
+
+
+--
 -- Name: populate_addresses(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -73,9 +99,9 @@ CREATE FUNCTION populate_addresses() RETURNS trigger
   DECLARE 
     ip inet;
   BEGIN
-    FOR ip IN SELECT * from spread_ips(NEW.range) LOOP
+    FOR ip IN SELECT * from spread_ips(NEW.ips) LOOP
       BEGIN
-        INSERT INTO addresses(ip) VALUES (ip);
+        INSERT INTO addresses(ip,range_id) VALUES (ip,NEW.id);
       EXCEPTION WHEN unique_violation THEN
         -- nothing, address already exists
       END;
@@ -152,7 +178,7 @@ $$;
 
 
 --
--- Name: addresses; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: addresses; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE addresses (
@@ -160,6 +186,7 @@ CREATE TABLE addresses (
     ip inet,
     notes text,
     server_id integer,
+    range_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -185,7 +212,7 @@ ALTER SEQUENCE addresses_id_seq OWNED BY addresses.id;
 
 
 --
--- Name: datacenters; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: datacenters; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE datacenters (
@@ -219,7 +246,7 @@ ALTER SEQUENCE datacenters_id_seq OWNED BY datacenters.id;
 
 
 --
--- Name: migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: migrations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE migrations (
@@ -249,7 +276,7 @@ ALTER SEQUENCE migrations_id_seq OWNED BY migrations.id;
 
 
 --
--- Name: pulls; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: pulls; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE pulls (
@@ -302,13 +329,12 @@ ALTER SEQUENCE pulls_id_seq OWNED BY pulls.id;
 
 
 --
--- Name: ranges; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: ranges; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE ranges (
     id integer NOT NULL,
     ips inet,
-    isp text,
     notes text,
     datacenter_id integer,
     created_at timestamp without time zone,
@@ -355,7 +381,7 @@ ALTER SEQUENCE server_assignments_id_seq OWNED BY server_assignments.id;
 
 
 --
--- Name: servers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: servers; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE servers (
@@ -364,9 +390,8 @@ CREATE TABLE servers (
     port integer,
     username text,
     password text,
-    datacenter text,
-    location text,
     code text,
+    number integer,
     role text,
     notes text,
     datacenter_id integer,
@@ -444,7 +469,7 @@ ALTER TABLE ONLY servers ALTER COLUMN id SET DEFAULT nextval('servers_id_seq'::r
 
 
 --
--- Name: addresses_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: addresses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY addresses
@@ -452,7 +477,7 @@ ALTER TABLE ONLY addresses
 
 
 --
--- Name: datacenters_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: datacenters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY datacenters
@@ -460,7 +485,7 @@ ALTER TABLE ONLY datacenters
 
 
 --
--- Name: migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY migrations
@@ -468,7 +493,7 @@ ALTER TABLE ONLY migrations
 
 
 --
--- Name: pulls_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: pulls_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY pulls
@@ -476,7 +501,7 @@ ALTER TABLE ONLY pulls
 
 
 --
--- Name: ranges_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: ranges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY ranges
@@ -484,7 +509,7 @@ ALTER TABLE ONLY ranges
 
 
 --
--- Name: server_assignments_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: server_assignments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY server_assignments
@@ -492,7 +517,7 @@ ALTER TABLE ONLY server_assignments
 
 
 --
--- Name: servers_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: servers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY servers
@@ -500,112 +525,98 @@ ALTER TABLE ONLY servers
 
 
 --
--- Name: index_address_id_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_address_id_on_pulls; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_address_id_on_pulls ON pulls USING btree (address_id);
 
 
 --
--- Name: index_address_id_on_server_assignments; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_address_id_on_server_assignments; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_address_id_on_server_assignments ON server_assignments USING btree (address_id);
 
 
 --
--- Name: index_code_on_servers; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_code_on_servers; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_code_on_servers ON servers USING btree (code);
 
 
 --
--- Name: index_datacenter_id_on_servers; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_datacenter_id_on_servers; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_datacenter_id_on_servers ON servers USING btree (datacenter_id);
 
 
 --
--- Name: index_event_link_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_event_link_on_pulls; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_event_link_on_pulls ON pulls USING btree (event_link);
 
 
 --
--- Name: index_final_status_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_final_status_on_pulls ON pulls USING btree (final_status);
-
-
---
--- Name: index_gist_ip_on_addresses; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_gist_ip_on_addresses; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_gist_ip_on_addresses ON addresses USING gist (ip inet_ops);
 
 
 --
--- Name: index_gist_ip_on_servers; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_gist_ip_on_servers; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_gist_ip_on_servers ON servers USING gist (ip inet_ops);
 
 
 --
--- Name: index_ip_on_addresses; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_ip_on_addresses; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_ip_on_addresses ON addresses USING btree (host(ip));
 
 
 --
--- Name: index_refresh_time_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_refresh_time_on_pulls ON pulls USING btree (refresh_time);
-
-
---
--- Name: index_search_date_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_search_date_on_pulls; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_search_date_on_pulls ON pulls USING btree (search_date);
 
 
 --
--- Name: index_server_id_on_addresses; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_server_id_on_addresses; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_server_id_on_addresses ON addresses USING btree (server_id);
 
 
 --
--- Name: index_server_id_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_server_id_on_pulls; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_server_id_on_pulls ON pulls USING btree (server_id);
 
 
 --
--- Name: index_server_id_on_server_assignments; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_server_id_on_server_assignments; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_server_id_on_server_assignments ON server_assignments USING btree (server_id);
 
 
 --
--- Name: index_server_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_server_on_pulls; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_server_on_pulls ON pulls USING btree (server);
 
 
 --
--- Name: index_thread_log_id_on_pulls; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_thread_log_id_on_pulls; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_thread_log_id_on_pulls ON pulls USING btree (thread_log_id);
@@ -637,6 +648,13 @@ CREATE TRIGGER timestamps_on_ranges BEFORE INSERT OR UPDATE ON ranges FOR EACH R
 --
 
 CREATE TRIGGER timestamps_on_servers BEFORE INSERT OR UPDATE ON servers FOR EACH ROW EXECUTE PROCEDURE timestamp_on_change();
+
+
+--
+-- Name: trigger_link_pulls; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trigger_link_pulls BEFORE INSERT OR UPDATE ON pulls FOR EACH ROW EXECUTE PROCEDURE link_pulls();
 
 
 --

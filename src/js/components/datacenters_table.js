@@ -11,7 +11,7 @@ const DatacentersTable = React.createClass({
 
     return (
       <table className="table table-condensed table-striped table-bordered datacenters-table">
-        <TableHead columns={['id','name','location','notes']} />
+        <TableHead columns={['id','name','location','notes']} actions={true} />
         <tbody>
           {rows}
         </tbody>

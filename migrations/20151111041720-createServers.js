@@ -9,6 +9,7 @@ exports.up = function(db, callback) {
     username:      { type: 'text' },
     password:      { type: 'text' },
     code:          { type: 'text' },
+    number:        { type: 'int'  },
     role:          { type: 'text' },
     notes:         { type: 'text' },
     datacenter_id: { type: 'int' },

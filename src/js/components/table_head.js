@@ -7,11 +7,13 @@ const TableHead = React.createClass({
       return <th key={k} className={k}>{col}</th>
     });
 
+    let actions = this.props.actions ? <th className="actions"></th> : null;
+
     return (
       <thead>
         <tr>
           {columns}
-          <th className="actions"></th>
+          {actions}
         </tr>
       </thead>
     );

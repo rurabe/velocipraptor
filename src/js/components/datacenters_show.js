@@ -2,12 +2,13 @@ const React = require('react');
 
 const {Row,Col,PanelGroup,Panel} = require('react-bootstrap');
 
-const RangesForm = require('./ranges_form');
+const Dialog = require('./dialog')
 const Breadcrumbs = require('./breadcrumbs');
 const RangesTable = require('./ranges_table');
 const ServersTable = require('./servers_table');
 
 const ServersActions = require('../actions/servers_actions');
+const PageActions = require('../actions/page_actions');
 
 const DatacentersShow = React.createClass({
   render: function(){
@@ -28,11 +29,9 @@ const DatacentersShow = React.createClass({
         <Row>
           <Col md={6}>
             <h4>Ranges</h4>
-            <PanelGroup defaultActiveKey="0" accordion className="ranges-actions">
-              <Panel header="Add Ranges" eventKey="1">
-                <RangesForm datacenter={this.props.datacenter} />
-              </Panel>
-            </PanelGroup>
+            <div className="ranges-actions">
+              <button className="btn btn-sm btn-success" onClick={this._addRange}>Add Ranges</button>
+            </div>
             <RangesTable ranges={this.props.ranges} datacenter={this.props.datacenter}/>
           </Col>
           <Col md={6}>
@@ -40,14 +39,18 @@ const DatacentersShow = React.createClass({
             <div className="servers-actions">
               <button className="btn btn-sm btn-success" onClick={this._createServer}>Add Server</button>
             </div>
-            <ServersTable servers={this.props.servers} datacenter={this.props.datacenter}/>
+            <ServersTable servers={this.props.servers.toIndexedSeq()} datacenter={this.props.datacenter}/>
           </Col>
         </Row>
+        <Dialog mode={this.props.page.get('dialog')} {...this.props} />
       </div>
     );
   },
   _createServer: function(){
     ServersActions.create({datacenter_id: this.props.datacenter.get('id')});
+  },
+  _addRange: function(){
+    PageActions.dispatch({type: 'dialog.activate', mode: 'add_ranges'});
   }
 });
 

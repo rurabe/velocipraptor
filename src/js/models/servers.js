@@ -4,7 +4,7 @@ const DB = require('../db');
 
 const QueryHelpers = require('../helpers/query_helpers');
 const _jsonize = QueryHelpers.jsonize;
-const _fields = "servers.id,servers.ip,servers.code,servers.notes,servers.datacenter_id";
+const _fields = "servers.id,servers.ip,servers.code,servers.number,servers.role,servers.notes,servers.datacenter_id";
 
 const Servers = {
   where: function(params){

@@ -10,6 +10,7 @@ const AppLayout = require('./app_layout');
 const DatacentersIndexContainer = require('./datacenters_index_container');
 const DatacentersShowContainer = require('./datacenters_show_container');
 const RangesShowContainer = require('./ranges_show_container');
+const ServersShowContainer = require('./servers_show_container');
 
 
 const AppRouter = React.createClass({
@@ -20,6 +21,7 @@ const AppRouter = React.createClass({
           <IndexRoute component={DatacentersIndexContainer} />
           <Route path="datacenters/:datacenter_id" component={DatacentersShowContainer}/>
           <Route path="datacenters/:datacenter_id/ranges/:range_id" component={RangesShowContainer} />
+          <Route path="datacenters/:datacenter_id/servers/:server_id" component={ServersShowContainer} />
         </Route>
       </Router>
     );
