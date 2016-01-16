@@ -5,7 +5,7 @@ const AddressesController = require('./controllers/addresses_controller');
 const DatacentersController = require('./controllers/datacenters_controller');
 const RangesController = require('./controllers/ranges_controller');
 const ServersController = require('./controllers/servers_controller');
-const RangesAssignmentsControler = require('./controllers/ranges_assignments_controller');
+const ServerAssignmentsController = require('./controllers/server_assignments_controller');
 
 const Passport = require('./config/passport');
 
@@ -43,7 +43,7 @@ const Routes = {
     app.put('/api/servers/:id',ServersController.update);
     app.delete('/api/servers/:id',ServersController.destroy);
 
-    app.post('/api/datacenters/:datacenter_id/range_assignments',RangesAssignmentsControler.create);
+    app.post('/api/datacenters/:datacenter_id/server_assignments',ServerAssignmentsController.create);
   }
 };
 

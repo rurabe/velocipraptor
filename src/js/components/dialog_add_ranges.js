@@ -10,7 +10,7 @@ const TableHead = require('./table_head');
 const SubnetHelpers = require('../helpers/subnet_helpers');
 
 const RangesActions = require('../actions/ranges_actions');
-const RangesAssignmentsActions = require('../actions/ranges_assignments_actions');
+const ServerAssignmentsActions = require('../actions/server_assignments_actions');
 
 const DialogAddRanges = React.createClass({
   getInitialState: function(){
@@ -102,7 +102,7 @@ const DialogAddRanges = React.createClass({
   _assign: function(){
     let dcid = this.props.datacenter.get('id');
     Promise.map(this.state.ranges,r => RangesActions.create({datacenter_id: dcid, ips: r})).then( (res) => {
-      return RangesAssignmentsActions.create(dcid,{ips: this.state.ips});
+      return ServerAssignmentsActions.create(dcid,{ips: this.state.ips});
     }).then( payload => {
       this.setState({addedAddresses: payload.addresses });
     });

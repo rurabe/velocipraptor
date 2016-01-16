@@ -9,7 +9,7 @@ const ServerAssignments = require('../models/server_assignments');
 
 const QueryHelpers = require('../helpers/query_helpers');
 
-const RangesAssignmentsController = {
+const ServerAssignmentsController = {
   create: function(req,res){
     let ips = req.body.ips;
     return Promise.all([
@@ -47,4 +47,4 @@ const _assignIps = function(datacenter_id,ips,serversFunction){
   })
 };
 
-module.exports = RangesAssignmentsController;
+module.exports = ServerAssignmentsController;
