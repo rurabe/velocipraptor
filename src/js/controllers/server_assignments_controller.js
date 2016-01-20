@@ -12,7 +12,6 @@ const QueryHelpers = require('../helpers/query_helpers');
 const ServerAssignmentsController = {
   create: function(req,res){
     let data = req.body;
-    console.log(data)
     return Promise.all([
       _assignIps(req.params.datacenter_id,data.servers,_getTicketServers),
       _assignIps(req.params.datacenter_id,data.proxies,_getProxyServers),
@@ -44,7 +43,6 @@ const _assignIps = function(datacenter_id,ips,serversFunction){
       let nper = Math.max(Math.floor(ips.length / servers.length),1);
       return Promise.map(ips,(ip,i) => {
         let serverIndex = Math.min(Math.floor(i/nper),servers.length - 1);
-        console.log(ips.length,servers.length,serverIndex,nper,i)
         return ServerAssignments.create(servers[serverIndex].id,ip)
       },{concurrency: 10});
     } else {

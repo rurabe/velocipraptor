@@ -25,6 +25,11 @@ const Ranges = {
   update: function(id,update){
     let u = QueryHelpers.set(squel.update().table("ranges").where("id = ?",id).returning(_fields),update);
     return DB.query(u.toParam()).then(_jsonize);
+  },
+  destroy: function(id){
+    let unassign = 'select * from unassign((select datacenter_id from ranges where id = $1),(select ips from ranges where id = $1))'
+    let q = squel.update().table("ranges").where("id = ?",id).setFields({datacenter_id: null}).returning(_fields);
+    return DB.query({text: unassign, values: [id]}).then( unassigns => DB.query(q.toParam()) ).then(_jsonize);
   }
 };
 

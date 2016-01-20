@@ -18,6 +18,11 @@ const RangesActions = {
     return new Promise(function(resolve,reject){
       request.put(`/api/ranges/${id}`).send({update: update}).end(_dr.bind(this,'ranges.merge',resolve,reject));
     });
+  },
+  destroy: function(id){
+    return new Promise(function(resolve,reject){
+      request.del(`/api/ranges/${id}`).end(_dr.bind(this,'ranges.remove',resolve,reject));
+    });
   }
 };
 

@@ -11,7 +11,7 @@ class DatacentersStore extends MapStore {
       case 'datacenters.merge':
         return state.mergeDeep(Immutable.fromJS(action.datacenters));
       case 'datacenters.remove':
-        return Object.keys(action.datacenters).reduce( (s,k) => { return state.delete(k) },state)
+        return Object.keys(action.datacenters).reduce( (s,k) => { return s.delete(k) },state)
       default:
         return state;
     }

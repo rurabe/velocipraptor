@@ -11,7 +11,7 @@ class ServersStore extends MapStore {
       case 'servers.merge':
         return state.mergeDeep(Immutable.fromJS(action.servers));
       case 'servers.remove':
-        return Object.keys(action.servers).reduce( (s,k) => { return state.delete(k) },state)
+        return Object.keys(action.servers).reduce( (s,k) => { return s.delete(k) },state)
       default:
         return state;
     }

@@ -15,6 +15,11 @@ const RangesController = {
     Ranges.update(req.params.id,req.body.update).then( ranges => {
       res.json(Object.assign({},req.query,{ranges: ranges}));
     })
+  },
+  destroy: function(req,res){
+    Ranges.destroy(req.params.id).then( ranges => {
+      res.json(Object.assign({},req.query,{ranges: ranges}));
+    })
   }
 };
 

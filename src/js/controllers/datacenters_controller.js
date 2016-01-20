@@ -19,7 +19,7 @@ const DatacentersController = {
   destroy: function(req,res){
     Datacenters.destroy(req.params.id).then( datacenters => {
       res.json(Object.assign({},req.query,{datacenters: datacenters}));
-    })
+    });
   }
 };
 
