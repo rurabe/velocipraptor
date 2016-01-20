@@ -48,10 +48,10 @@ CREATE TABLE server_assignments (
 
 
 --
--- Name: assign(text, inet); Type: FUNCTION; Schema: public; Owner: -
+-- Name: assign(integer, inet); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION assign(text, inet) RETURNS server_assignments
+CREATE FUNCTION assign(integer, inet) RETURNS server_assignments
     LANGUAGE plpgsql
     AS $_$
   DECLARE
@@ -59,79 +59,11 @@ CREATE FUNCTION assign(text, inet) RETURNS server_assignments
     address_id int;
     assignment server_assignments;
   BEGIN
-    select id into server_id from servers where code = $1;
     select id into address_id from addresses where ip = $2;
-    insert into server_assignments(address_id,server_id,assigned,active,created_at) values (address_id,server_id,true,true,now()) returning * into assignment;
+    insert into server_assignments(address_id,server_id,assigned,active,created_at) values (address_id,$1,true,true,now()) returning * into assignment;
     RETURN assignment;
   END;
 $_$;
-
-
---
--- Name: link_pulls(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION link_pulls() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  DECLARE
-    address_id int;
-    server_id  int;
-  BEGIN
-    select addresses.id into address_id from addresses where host(addresses.ip) = NEW.ip;
-    select servers.id into server_id from servers where host(servers.ip) = substring(NEW.server,'d{1,3}.d{1,3}.d{1,3}.d{1,3}');
-    NEW.address_id = address_id;
-    NEW.server_id = server_id;
-    NEW.created_at = now();
-    NEW.updated_at = now();
-    RETURN NEW;
-  END;
-$$;
-
-
---
--- Name: populate_addresses(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION populate_addresses() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  DECLARE 
-    ip inet;
-  BEGIN
-    FOR ip IN SELECT * from spread_ips(NEW.ips) LOOP
-      BEGIN
-        INSERT INTO addresses(ip,range_id) VALUES (ip,NEW.id);
-      EXCEPTION WHEN unique_violation THEN
-        -- nothing, address already exists
-      END;
-    END LOOP;
-
-    RETURN NULL;
-  END;
-$$;
-
-
---
--- Name: spread_ips(inet); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION spread_ips(range inet) RETURNS SETOF inet
-    LANGUAGE plpgsql
-    AS $$
-  DECLARE
-    current_ip inet;
-    masklen int;
-  BEGIN
-    masklen := masklen(range);
-    current_ip := host(network(range));
-    WHILE current_ip <<= range LOOP
-      RETURN NEXT set_masklen(current_ip,masklen);
-      current_ip := current_ip + 1;
-    END LOOP;
-    RETURN;
-  END;
-$$;
 
 
 --
@@ -141,40 +73,6 @@ $$;
 CREATE FUNCTION timestamp_on_change() RETURNS trigger
     LANGUAGE plpgsql
     AS $$ begin new.created_at = coalesce(new.created_at,now()); new.updated_at = now(); return new; end $$;
-
-
---
--- Name: unassign(integer, inet); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION unassign(integer, inet) RETURNS SETOF server_assignments
-    LANGUAGE plpgsql
-    AS $_$
-  DECLARE
-    address addresses;
-    assignment server_assignments;
-  BEGIN
-    FOR address IN SELECT * FROM addresses INNER JOIN servers on addresses.server_id = servers.id WHERE servers.datacenter_id = $1 AND addresses.ip <<= $2 LOOP
-      INSERT INTO server_assignments(address_id,server_id,assigned,active,created_at) VALUES (address.id,address.server_id,FALSE,FALSE,now()) RETURNING * INTO assignment;
-      RETURN NEXT assignment;
-    END LOOP;
-    RETURN;
-  END;
-$_$;
-
-
---
--- Name: update_address_from_server_assignment(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION update_address_from_server_assignment() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-  BEGIN
-    UPDATE addresses SET server_id = (CASE WHEN NEW.assigned THEN NEW.server_id ELSE NULL END) WHERE id = NEW.address_id;
-  RETURN NULL;
-  END;
-$$;
 
 
 --
@@ -532,13 +430,6 @@ CREATE INDEX index_address_id_on_pulls ON pulls USING btree (address_id);
 
 
 --
--- Name: index_address_id_on_server_assignments; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_address_id_on_server_assignments ON server_assignments USING btree (address_id);
-
-
---
 -- Name: index_code_on_servers; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -602,13 +493,6 @@ CREATE INDEX index_server_id_on_pulls ON pulls USING btree (server_id);
 
 
 --
--- Name: index_server_id_on_server_assignments; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_server_id_on_server_assignments ON server_assignments USING btree (server_id);
-
-
---
 -- Name: index_server_on_pulls; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -648,27 +532,6 @@ CREATE TRIGGER timestamps_on_ranges BEFORE INSERT OR UPDATE ON ranges FOR EACH R
 --
 
 CREATE TRIGGER timestamps_on_servers BEFORE INSERT OR UPDATE ON servers FOR EACH ROW EXECUTE PROCEDURE timestamp_on_change();
-
-
---
--- Name: trigger_link_pulls; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER trigger_link_pulls BEFORE INSERT OR UPDATE ON pulls FOR EACH ROW EXECUTE PROCEDURE link_pulls();
-
-
---
--- Name: trigger_populate_addresses; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER trigger_populate_addresses AFTER INSERT ON ranges FOR EACH ROW EXECUTE PROCEDURE populate_addresses();
-
-
---
--- Name: trigger_update_address_from_server_assignment; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER trigger_update_address_from_server_assignment AFTER INSERT OR UPDATE ON server_assignments FOR EACH ROW EXECUTE PROCEDURE update_address_from_server_assignment();
 
 
 --

@@ -11,15 +11,16 @@ const QueryHelpers = require('../helpers/query_helpers');
 
 const ServerAssignmentsController = {
   create: function(req,res){
-    let ips = req.body.ips;
+    let data = req.body;
+    console.log(data)
     return Promise.all([
-      _assignIps(req.params.datacenter_id,ips.servers,_getTicketServers),
-      _assignIps(req.params.datacenter_id,ips.proxies,_getProxyServers),
+      _assignIps(req.params.datacenter_id,data.servers,_getTicketServers),
+      _assignIps(req.params.datacenter_id,data.proxies,_getProxyServers),
     ]).then((queries) => {
-      let ipMap = ips.servers.concat(ips.proxies);
-      return Addresses.where({'ip': ipMap})
+      let ipMap = data.servers.concat(data.proxies);
+      return Addresses.where({'ip': ipMap});
     }).then(addresses => {
-      res.json({addresses: addresses})
+      res.json({addresses: addresses});
     });
   },
   destroy: function(req,res){
@@ -39,11 +40,17 @@ const _getProxyServers = function(datacenter_id){
 
 const _assignIps = function(datacenter_id,ips,serversFunction){
   return serversFunction(datacenter_id).then(servers => {
-    let nper = Math.floor(ips.length / servers.length);
-    return Promise.map(ips,(ip,i) => {
-      let serverIndex = Math.min(Math.floor(i/nper),servers.length - 1);
-      return ServerAssignments.create(servers[serverIndex].code,ip)
-    },{concurrency: 10});
+    if(servers.length > 0){
+      let nper = Math.max(Math.floor(ips.length / servers.length),1);
+      return Promise.map(ips,(ip,i) => {
+        let serverIndex = Math.min(Math.floor(i/nper),servers.length - 1);
+        console.log(ips.length,servers.length,serverIndex,nper,i)
+        return ServerAssignments.create(servers[serverIndex].id,ip)
+      },{concurrency: 10});
+    } else {
+      return Promise.resolve()
+    }
+
   })
 };
 

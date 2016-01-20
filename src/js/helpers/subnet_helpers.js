@@ -80,7 +80,7 @@ const _proxyDs = function(i){
 };
 
 const _formatIp = function(a,b,c,d,size){
-  return [[a,b,c,d].join("."),size].join("/");
+  return [[a,b,c,d].join("."),_mask(size)].join(",");
 };
 
 const _sample = function(arr,n){
@@ -96,6 +96,12 @@ const _sample = function(arr,n){
 const _mask = function(size){
   return SUBNETS[size.toString()];
 };
+
+const _bits = function(mask){
+  for(var bits in SUBNETS){
+    if(SUBNETS[bits] === mask){ return bits }
+  }
+}
 
 const SubnetHelpers = {
   split: function(input){
@@ -113,7 +119,9 @@ const SubnetHelpers = {
     },{servers: [], proxies: [], axs: []})
 
     return {
-      ips: ips,
+      servers: ips.servers,
+      proxies: ips.proxies,
+      axs: ips.axs,
       ranges: ranges
     }
   },
@@ -122,6 +130,10 @@ const SubnetHelpers = {
   inetToMask: function(inet){
     let i = _parse(inet);
     return [[i[1],i[2],i[3],i[4]].join("."),_mask(i[5])].join(",");
+  },
+  maskToInet: function(ipAndMask){
+    let split = ipAndMask.split(",");
+    return [split[0],_bits(split[1])].join("/");
   }
 };
 

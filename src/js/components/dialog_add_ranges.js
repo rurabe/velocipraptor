@@ -15,11 +15,9 @@ const ServerAssignmentsActions = require('../actions/server_assignments_actions'
 const DialogAddRanges = React.createClass({
   getInitialState: function(){
     return {
-      ips: {
-        servers: [],
-        proxies: [],
-        axs: [],
-      },
+      servers: '',
+      proxies: '',
+      axs: '',
       ranges: [],
       addedAddresses: {},
     }
@@ -28,7 +26,7 @@ const DialogAddRanges = React.createClass({
     let results = [];
     for(let id in this.state.addedAddresses){
       let address = this.state.addedAddresses[id];
-      let server = this.props.servers.get(address.server_id.toString());
+      let server = this.props.servers.get((address.server_id || '').toString());
       results.push(
         <tr key={address.id}>
           <td>{address.ip}</td>
@@ -61,17 +59,17 @@ const DialogAddRanges = React.createClass({
           <Row>
             <Col md={4}>
               <div>
-                <Input type="textarea" label={`Servers (${this.state.ips.servers.length})`} rows="5" ref="servers" value={this.state.ips.servers.map(SubnetHelpers.inetToMask).join("\n")}/>
+                <Input type="textarea" label={`Servers (${this._count(this.state.servers)})`} rows="5" ref="servers" value={this.state.servers} onChange={this._updateState.bind(this,'servers')}/>
               </div>
             </Col>
             <Col md={4}>
               <div>
-                <Input type="textarea" label={`Proxies (${this.state.ips.proxies.length})`} rows="5" ref="proxies" value={this.state.ips.proxies.map(SubnetHelpers.inetToMask).join("\n")}/>
+                <Input type="textarea" label={`Proxies (${this._count(this.state.proxies)})`} rows="5" ref="proxies" value={this.state.proxies} onChange={this._updateState.bind(this,'proxies')}/>
               </div>
             </Col>
             <Col md={4}>
               <div>
-                <Input type="textarea" label={`AXS (${this.state.ips.axs.length})`} rows="5" ref="axs" value={this.state.ips.axs.map(SubnetHelpers.inetToMask).join("\n")}/>
+                <Input type="textarea" label={`AXS (${this._count(this.state.axs)})`} rows="5" ref="axs" value={this.state.axs} onChange={this._updateState.bind(this,'axs')}/>
               </div>
             </Col>
           </Row>
@@ -96,16 +94,33 @@ const DialogAddRanges = React.createClass({
     );
   },
   _split: function(){
-    let splits = SubnetHelpers.split(this.refs.ranges.refs.input.value)
-    this.setState(splits);
+    let splits = SubnetHelpers.split(this.refs.ranges.refs.input.value);
+    this.setState({
+      servers: splits.servers.join("\n"),
+      proxies: splits.proxies.join("\n"),
+      axs: splits.axs.join("\n"),
+      ranges: splits.ranges,
+    });
   },
   _assign: function(){
     let dcid = this.props.datacenter.get('id');
     Promise.map(this.state.ranges,r => RangesActions.create({datacenter_id: dcid, ips: r})).then( (res) => {
-      return ServerAssignmentsActions.create(dcid,{ips: this.state.ips});
+      return ServerAssignmentsActions.create(dcid,{
+        servers: this.state.servers.split("\n").filter( ip => ip ).map(SubnetHelpers.maskToInet),
+        proxies: this.state.proxies.split("\n").filter( ip => ip ).map(SubnetHelpers.maskToInet),
+        axs: this.state.axs.split("\n").filter( ip => ip ).map(SubnetHelpers.maskToInet)
+      });
     }).then( payload => {
       this.setState({addedAddresses: payload.addresses });
     });
+  },
+  _updateState: function(attr,e){
+    let update = {};
+    update[attr] = e.target.value
+    this.setState(update)
+  },
+  _count: function(collection){
+    return collection.split("\n").filter(ip => ip).length
   }
 });
 

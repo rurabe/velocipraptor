@@ -1,3 +1,5 @@
+'use strict';
+
 var dbm = global.dbm || require('db-migrate');
 var type = dbm.dataType;
 
@@ -120,11 +122,11 @@ var servers = {
 
 var assign = function(ips){
   return ips.map(function(ip){
-    var server = servers[ip[0]]
+    var serverCode = servers[ip[0]]
     var split = ip[1].split(",");
     var submask = MASKS[split[1]];
-    var i = [split[0],submask].join("/");
-    return "SELECT id FROM assign('"+server+"','"+i+"');";
+    var inet = [split[0],submask].join("/");
+    return `SELECT id FROM assign((select id from servers where code = '${serverCode}'),'${inet}');`;
   }).join(' ');
 };
 

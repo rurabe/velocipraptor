@@ -1,6 +1,6 @@
 const React = require('react');
 
-const {Row,Col,PanelGroup,Panel} = require('react-bootstrap');
+const {Row,Col,PanelGroup,Panel,Input} = require('react-bootstrap');
 
 const Dialog = require('./dialog')
 const Breadcrumbs = require('./breadcrumbs');
@@ -21,9 +21,12 @@ const DatacentersShow = React.createClass({
           </Col>
         </Row>
         <Row>
-          <Col md={12}>
+          <Col md={6}>
             <h1>{dc.name}</h1>
             <h4>{dc.location}</h4>
+          </Col>
+          <Col md={6}>
+            <Input value={dc.notes} rows="5" textarea/>
           </Col>
         </Row>
         <Row>

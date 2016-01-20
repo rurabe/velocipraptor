@@ -1,3 +1,5 @@
+'use strict';
+
 var dbm = global.dbm || require('db-migrate');
 var type = dbm.dataType;
 
@@ -1219,17 +1221,17 @@ var MASKS = {
   '255.255.0.0'    : 16,
 };
 
-var assigns = function(ips){
+var assign = function(ips){
   return ips.map(function(ip){
     var split = ip.split(",");
     var submask = MASKS[split[1]];
-    var i = [split[0],submask].join("/");
-    return "select * from assign('level3proxy','"+i+"');";
+    var inet = [split[0],submask].join("/");
+    return `SELECT id FROM assign((select id from servers where code = 'level3proxy'),'${inet}');`;
   }).join(' ');
-}
+};
 
 exports.up = function(db, callback) {
-  db.runSql(assigns(DATA),callback);
+  db.runSql(assign(DATA),callback);
 };
 
 exports.down = function(db, callback) {
