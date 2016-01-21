@@ -1,5 +1,5 @@
 {
-  "name": "ips",
+  "name": "velocipraptor",
   "version": "0.0.1",
   "description": "app to track ips and ip success",
   "repository": "https://github.com/rurabe/ips",
@@ -33,13 +33,7 @@
     "socket.io": "^1.3.7",
     "socket.io-client": "^1.3.7",
     "squel": "^4.2.2",
-    "superagent": "^1.5.0"
-  },
-  "scripts": {
-    "start": "node server",
-    "dump": "pg_dump -d velocipraptor_development --schema-only -O -f schema.sql"
-  },
-  "devDependencies": {
+    "superagent": "^1.5.0",
     "babel-core": "^6.1.2",
     "babel-preset-es2015": "^6.1.2",
     "babel-preset-react": "^6.1.2",
@@ -60,7 +54,13 @@
     "react-dom": "^0.14.3",
     "react-router": "^1.0.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "scripts": {
+    "start": "node server",
+    "dump": "pg_dump -d velocipraptor_development --schema-only -O -f schema.sql"
+  },
+  "devDependencies": {
     "watchify": "^3.6.1"
   }
 }
