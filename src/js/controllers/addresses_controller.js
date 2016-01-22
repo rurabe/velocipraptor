@@ -1,4 +1,4 @@
-const Addresses = require('./../models/Addresses');
+const Addresses = require('../models/addresses');
 
 const AddressesController = {
   index: function(req,res){

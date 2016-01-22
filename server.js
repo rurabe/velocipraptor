@@ -9,7 +9,7 @@ const RedisStore = require('connect-redis')(session);
 
 app.use(session({ store: new RedisStore({url: process.env.REDIS_URL}), secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: false}));
 app.set('port', (process.env.PORT || 5000));
-app.use(express.static('public'));
+app.use('/assets',express.static('public'));
 app.set('views', './src/html');
 app.set('view engine', 'jade');
 

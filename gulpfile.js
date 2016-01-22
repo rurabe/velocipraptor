@@ -31,6 +31,7 @@ var buffer = require('vinyl-buffer');
 var gutil = require('gulp-util');
 var sass = require('gulp-sass');
 var uglifycss = require('gulp-uglifycss');
+var uglify = require('gulp-uglify');
 
 var bundlejs = function(bfy) {
   return bfy.bundle()
