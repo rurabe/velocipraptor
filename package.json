@@ -51,7 +51,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "start": "NODE_PATH=src pm2 start server.js",
+    "restart": "pm2 restart server.js -l production.log --merge-logs",
     "dump": "pg_dump -d velocipraptor_development --schema-only -O -f schema.sql"
   },
   "devDependencies": {
