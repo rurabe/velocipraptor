@@ -53,10 +53,10 @@ var w = watchify(browserify(opts).transform('babelify', {presets: ['es2015', 're
 w.on('update', function(){  bundlejs(w); });
 w.on('log', gutil.log); // output build logs to terminal
 
-gulp.task('js',function(){ bundlejs(b) }); 
+gulp.task('js',function(){ return bundlejs(b) }); 
 
 gulp.task('css',function(){
-  gulp.src('src/css/app.sass')
+  return gulp.src('src/css/app.sass')
     .pipe(sass({ sourceComments: 'normal', indentedSyntax: true }))
     .pipe(gulp.dest('public'));
 });
@@ -69,11 +69,11 @@ gulp.task('watch',function(){
 gulp.task('default',['js','css']);
 
 gulp.task('productionify',['default'],function(){
-  gulp.src('public/*.js')
+  gulp.src('public/app.js')
     .pipe(uglify())
     .pipe(gulp.dest('public'));
 
-  gulp.src('public/*.css')
+  gulp.src('public/app.css')
     .pipe(uglifycss())
     .pipe(gulp.dest('public'));
 });
