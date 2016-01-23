@@ -2,6 +2,7 @@
 
 const React = require('react');
 const Promise = require('bluebird');
+const Immutable = require('immutable');
 
 const {Row,Col,Modal,Input} = require('react-bootstrap');
 
@@ -26,7 +27,7 @@ const DialogAddRanges = React.createClass({
     let results = [];
     for(let id in this.state.addedAddresses){
       let address = this.state.addedAddresses[id];
-      let server = this.props.servers.get((address.server_id || '').toString());
+      let server = address.server_id ? this.props.servers.get(address.server_id.toString()) : new Immutable.Map();
       results.push(
         <tr key={address.id}>
           <td>{address.ip}</td>

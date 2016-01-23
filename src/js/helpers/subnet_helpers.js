@@ -37,7 +37,7 @@ class Subnet {
 };
 
 const _parse = function(inet){
-  return inet.match(/(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\s*\/(\d{2})/);
+  return inet.match(/(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\s*\/\s*(\d{2})/);
 }
 
 const _lastC = function(c,size){
@@ -105,7 +105,7 @@ const _bits = function(mask){
 
 const SubnetHelpers = {
   split: function(input){
-    let ranges = input.split(/[\s\n\,]+/)
+    let ranges = input.split(/(\s*[\n\,]\s*)+/)
     let cs = ranges.reduce( (a,r) => { 
       let s = new Subnet(r);
       return a.concat(s.cs());
