@@ -6,8 +6,10 @@ const Breadcrumbs = require('./breadcrumbs');
 const AddressesTable = require('./addresses_table');
 const TableHead = require('./table_head');
 const EditableTableCell = require('./editable_table_cell');
+const ClipboardButton = require('./clipboard_button');
 
 const ServersActions = require('../actions/servers_actions');
+const SubnetHelpers = require('../helpers/subnet_helpers');
 
 const ServersShow = React.createClass({
   render: function(){
@@ -25,6 +27,7 @@ const ServersShow = React.createClass({
         <Row>
           <Col md={12}>
             <h1>Server {s.id}</h1>
+            <ClipboardButton label="Copy IPs" text={this._copyAddresses} className="btn btn-primary" />
             <table className="table table-condensed table-bordered server-table">
               <tbody>
                 <tr>
@@ -51,10 +54,15 @@ const ServersShow = React.createClass({
         <Row>
           <Col md={12}>
             <AddressesTable addresses={this.props.addresses}/>
+            <ClipboardButton label="Copy IPs" text={this._copyAddresses} className="btn btn-primary" />
           </Col>
         </Row>
+
       </div>
     );
+  },
+  _copyAddresses: function(trigger){
+    return this.props.addresses.map(a => SubnetHelpers.inetToMask(a.get('ip')) ).join("\n");
   }
 });
 

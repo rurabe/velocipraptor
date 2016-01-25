@@ -134,6 +134,10 @@ const SubnetHelpers = {
   maskToInet: function(ipAndMask){
     let split = ipAndMask.split(",");
     return [split[0],_bits(split[1])].join("/");
+  },
+  host: function(inet){
+    let i = _parse(inet);
+    return [i[1],i[2],i[3],i[4]].join(".");
   }
 };
 

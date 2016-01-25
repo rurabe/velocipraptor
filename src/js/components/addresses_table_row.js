@@ -4,6 +4,8 @@ const {Link} = require('react-router');
 const EditableTableCell = require('./editable_table_cell');
 const AddressesActions = require('../actions/addresses_actions');
 
+const SubnetHelpers = require('../helpers/subnet_helpers');
+
 const AddressesTableRow = React.createClass({
   render: function(){
     let a = this.props.address.toJSON();
@@ -11,7 +13,8 @@ const AddressesTableRow = React.createClass({
     let onUpdate = AddressesActions.update.bind(this,a.id);
     return (
       <tr data-id={a.id}>
-        <td>{a.ip}</td>
+        <td>{SubnetHelpers.host(a.ip)}</td>
+        <td>{SubnetHelpers.inetToMask(a.ip)}</td>
         <td>{a.pulls_count}</td>
         <td>{a.successes_count}</td>
         <td>{rate ? (rate * 100).toFixed(1)  : null }</td>
