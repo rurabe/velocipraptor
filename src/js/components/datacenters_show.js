@@ -58,7 +58,6 @@ const DatacentersShow = React.createClass({
     PageActions.dispatch({type: 'dialog.activate', mode: 'add_ranges'});
   },
   _onNotesChange: function(e){
-    console.log(e.target.value)
     DatacentersActions.update(this.props.datacenter.get('id'),{notes: e.target.value})
   }
 });
