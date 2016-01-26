@@ -6,7 +6,9 @@ const Dialog = require('./dialog')
 const Breadcrumbs = require('./breadcrumbs');
 const RangesTable = require('./ranges_table');
 const ServersTable = require('./servers_table');
+const SpeedLimitInput = require('./speed_limit_input');
 
+const DatacentersActions = require('../actions/datacenters_actions');
 const ServersActions = require('../actions/servers_actions');
 const PageActions = require('../actions/page_actions');
 
@@ -26,7 +28,7 @@ const DatacentersShow = React.createClass({
             <h4>{dc.location}</h4>
           </Col>
           <Col md={6}>
-            <Input value={dc.notes} rows="5" textarea/>
+            <SpeedLimitInput value={dc.notes} rows="5" type="textarea" placeholder="notes" onChange={this._onNotesChange}/>
           </Col>
         </Row>
         <Row>
@@ -54,6 +56,10 @@ const DatacentersShow = React.createClass({
   },
   _addRange: function(){
     PageActions.dispatch({type: 'dialog.activate', mode: 'add_ranges'});
+  },
+  _onNotesChange: function(e){
+    console.log(e.target.value)
+    DatacentersActions.update(this.props.datacenter.get('id'),{notes: e.target.value})
   }
 });
 
