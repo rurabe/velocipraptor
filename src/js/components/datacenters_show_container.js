@@ -16,6 +16,8 @@ const AddressesActions = require('../actions/addresses_actions');
 
 const DatacentersShow = require('./datacenters_show');
 
+const SubnetHelpers = require('../helpers/subnet_helpers');
+
 class DatacentersShowContainer extends React.Component {
   static getStores(){
     return [DatacentersStore,RangesStore,ServersStore,AddressesStore,PageStore];
@@ -25,16 +27,30 @@ class DatacentersShowContainer extends React.Component {
     let datacenter_id = parseInt(props.routeParams.datacenter_id);
     let datacenter = DatacentersStore.get(datacenter_id.toString());
     let ranges = RangesStore.getState().filter(range => range.get('datacenter_id') === datacenter_id).toIndexedSeq();
-    var servers = ServersStore.getState()
+    let servers = ServersStore.getState()
       .filter(server => server.get('datacenter_id') === datacenter_id)
       .sortBy(s => s.get('number'));
-    var addresses = AddressesStore.getState()
+    let addresses = AddressesStore.getState()
       .filter( address => {
         let server_id = address.get('server_id')
         return server_id ? servers.has( server_id.toString() ) : false
       });
     let page = PageStore.getState();
 
+    let datacenter_ips_function = function(){
+      let servers = ServersStore.getState().filter(server => server.get('datacenter_id') === datacenter_id);
+
+      return AddressesStore.getState().filter( a => {
+        let server_id = a.get('server_id').toString();
+        return servers.getIn([server_id,'role']) !== 'proxy';
+      }).sortBy( a => {
+        let server_id = a.get('server_id').toString();
+        return servers.getIn([server_id,'number']);
+      }).map( a => {
+        let server_id = a.get('server_id').toString();
+        return [servers.getIn([server_id,'number']),SubnetHelpers.inetToMask(a.get('ip'))].join(",");
+      }).join("\n");
+    };
 
     return {
       datacenter: datacenter,
@@ -43,6 +59,7 @@ class DatacentersShowContainer extends React.Component {
       addresses: addresses,
       page: page,
       user: props.user,
+      datacenter_ips_function: datacenter_ips_function,
     };
   }
 

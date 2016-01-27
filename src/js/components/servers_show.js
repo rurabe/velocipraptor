@@ -62,7 +62,11 @@ const ServersShow = React.createClass({
     );
   },
   _copyAddresses: function(trigger){
-    return this.props.addresses.map(a => SubnetHelpers.inetToMask(a.get('ip')) ).join("\n");
+    if(this.props.server.get('role') === 'proxy'){
+      return this.props.addresses.map(a => SubnetHelpers.inetToMask(a.get('ip')) ).join("\n");
+    } else {
+      return this.props.datacenter_ips_function();
+    }
   }
 });
 
