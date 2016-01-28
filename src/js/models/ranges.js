@@ -19,8 +19,8 @@ const Ranges = {
   },
   create: function(params){
     params = Object.assign({created_at: 'now()'},params)
-    let i = squel.insert().into("ranges").setFields(params).returning(_fields);
-    return DB.query(i.toParam()).then(_jsonize);
+    let i = `INSERT INTO ranges (datacenter_id,ips) VALUES ($1,$2) ON CONFLICT DO NOTHING RETURNING ${_fields};`
+    return DB.query({text: i, values: [params.datacenter_id,params.ips]}).then(_jsonize);
   },
   update: function(id,update){
     let u = QueryHelpers.set(squel.update().table("ranges").where("id = ?",id).returning(_fields),update);

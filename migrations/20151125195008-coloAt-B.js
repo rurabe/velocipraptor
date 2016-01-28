@@ -588,7 +588,7 @@ var assign = function(ips){
   return ips.map(function(ip){
     var submask = MASKS[ip[2]];
     var i = [ip[1],submask].join("/");
-    return `SELECT id FROM assign((select id from servers where code = '${ip[0]}'),'${i}');`;
+    return `SELECT id FROM assign('${ip[0]}','${i}');`;
   }).join(' ');
 };
 

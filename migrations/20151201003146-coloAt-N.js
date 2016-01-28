@@ -126,7 +126,7 @@ var assign = function(ips){
     var split = ip[1].split(",");
     var submask = MASKS[split[1]];
     var inet = [split[0],submask].join("/");
-    return `SELECT id FROM assign((select id from servers where code = '${serverCode}'),'${inet}');`;
+    return `SELECT id FROM assign('${serverCode}','${inet}');`;
   }).join(' ');
 };
 

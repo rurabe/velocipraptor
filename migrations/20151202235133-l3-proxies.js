@@ -1226,7 +1226,7 @@ var assign = function(ips){
     var split = ip.split(",");
     var submask = MASKS[split[1]];
     var inet = [split[0],submask].join("/");
-    return `SELECT id FROM assign((select id from servers where code = 'level3proxy'),'${inet}');`;
+    return `SELECT id FROM assign('level3proxy','${inet}');`;
   }).join(' ');
 };
 

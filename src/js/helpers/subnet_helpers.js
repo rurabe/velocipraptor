@@ -103,8 +103,21 @@ const _bits = function(mask){
   }
 }
 
+const _assignToServers = function(ips,servs){
+  if(servs && servs.size > 0){
+    let servers = servs.toIndexedSeq();
+    let nper = Math.max(Math.floor(ips.length / servers.size),1);
+    return ips.map( (ip,i) => {
+      let server = servers.get(Math.min(Math.floor(i/nper),servers.size - 1));
+      return [server.get("code"),ip].join(",");
+    });
+  } else {
+    return ips.map( ip => [null,ip].join(","));
+  }
+};
+
 const SubnetHelpers = {
-  split: function(input){
+  split: function(input,servers){
     let ranges = input.split(/(\s*[\n\,]\s*)+/)
     let cs = ranges.reduce( (a,r) => { 
       let s = new Subnet(r);
@@ -119,13 +132,14 @@ const SubnetHelpers = {
     },{servers: [], proxies: [], axs: []})
 
     return {
-      servers: ips.servers,
+      servers: _assignToServers(ips.servers,servers),
       proxies: ips.proxies,
       axs: ips.axs,
       ranges: ranges
     }
   },
   mask: _mask,
+  bits: _bits,
   parse: _parse,
   inetToMask: function(inet){
     let i = _parse(inet);

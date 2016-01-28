@@ -523,7 +523,7 @@ var assign = function(ips){
     var split = ip.split(",");
     var submask = MASKS[split[1]];
     var inet = [split[0],submask].join("/");
-    return `SELECT id FROM assign((select id from servers where code = 'internapproxy'),'${inet}');`;
+    return `SELECT id FROM assign('internapproxy','${inet}');`;
   }).join(' ');
 };
 

@@ -31,10 +31,6 @@ const ServersShow = React.createClass({
             <table className="table table-condensed table-bordered server-table">
               <tbody>
                 <tr>
-                  <td>number</td>
-                  <EditableTableCell value={s.number} attr='number' onUpdate={onUpdate}/>
-                </tr>
-                <tr>
                   <td>code</td>
                   <EditableTableCell value={s.code} attr='code' onUpdate={onUpdate}/>
                 </tr>
@@ -43,8 +39,8 @@ const ServersShow = React.createClass({
                   <EditableTableCell value={s.ip} attr='ip' onUpdate={onUpdate}/>
                 </tr>
                 <tr>
-                  <td>role</td>
-                  <EditableTableCell value={s.role} attr='role' onUpdate={onUpdate}/>
+                  <td>notes</td>
+                  <EditableTableCell value={s.notes} attr='notes' onUpdate={onUpdate}/>
                 </tr>
               </tbody>
             </table>

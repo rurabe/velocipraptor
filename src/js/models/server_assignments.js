@@ -6,8 +6,8 @@ const Promise = require('bluebird');
 const QueryHelpers = require('../helpers/query_helpers');
 
 const ServerAssignments = {
-  create: function(serverId,ip){
-    return DB.query({text: 'select id from assign($1,$2)', values: [serverId,ip]});
+  create: function(serverCode,ip){
+    return DB.query({text: 'select id from assign($1,$2)', values: [serverCode,ip]});
   },
   destroy: function(datacenterId,range){
     return DB.query({

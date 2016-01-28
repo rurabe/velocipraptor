@@ -3,18 +3,19 @@
 var dbm = global.dbm || require('db-migrate');
 var type = dbm.dataType;
 
-var funcs = `CREATE OR REPLACE FUNCTION assign(int,inet) RETURNS server_assignments AS $$
+var funcs = `CREATE OR REPLACE FUNCTION assign(text,inet) RETURNS server_assignments AS $$
   DECLARE
     server_id int;
     address_id int;
     assignment server_assignments;
   BEGIN
     select id into address_id from addresses where ip = $2;
+    select id into server_id from servers where code = $1;
     IF address_id IS NULL THEN
-      insert into ranges(ips,datacenter_id) values (network($2),(select datacenter_id from servers where id = $1));
+      insert into ranges(ips,datacenter_id) values (network($2),(select datacenter_id from servers where code = $1));
       select id into address_id from addresses where ip = $2;
     END IF;
-    insert into server_assignments(address_id,server_id,assigned,active,created_at) values (address_id,$1,true,true,now()) returning * into assignment;
+    insert into server_assignments(address_id,server_id,assigned,active,created_at) values (address_id,server_id,true,true,now()) returning * into assignment;
     RETURN assignment;
   END;
 $$ LANGUAGE plpgsql;
@@ -37,5 +38,5 @@ exports.up = function(db, callback) {
 };
 
 exports.down = function(db, callback) {
-  db.runSql("DROP FUNCTION IF EXISTS assign(int,inet); DROP FUNCTION IF EXISTS unassign(int,inet);",callback);
+  db.runSql("DROP FUNCTION IF EXISTS assign(text,inet); DROP FUNCTION IF EXISTS unassign(int,inet);",callback);
 };

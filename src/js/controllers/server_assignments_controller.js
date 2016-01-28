@@ -13,10 +13,11 @@ const ServerAssignmentsController = {
   create: function(req,res){
     let data = req.body;
     return Promise.all([
-      _assignIps(req.params.datacenter_id,data.servers,_getTicketServers),
-      _assignIps(req.params.datacenter_id,data.proxies,_getProxyServers),
+      _assignServerIps(data.servers),
+      _assignProxyIps(req.params.datacenter_id,data.proxies),
     ]).then((queries) => {
-      let ipMap = data.servers.concat(data.proxies);
+      let serverIps = data.servers.map( assignment => assignment.split(",")[1] )
+      let ipMap = serverIps.concat(data.proxies);
       return Addresses.where({'ip': ipMap});
     }).then(addresses => {
       res.json({addresses: addresses});
@@ -27,29 +28,32 @@ const ServerAssignmentsController = {
   },
 };
 
-const _getTicketServers = function(datacenter_id){
-  let serversQuery = Servers.select({datacenter_id: datacenter_id}).where("role IS NULL").order("servers.number");
-  return DB.query(serversQuery.toParam())
-};
-
 const _getProxyServers = function(datacenter_id){
   let serversQuery = Servers.select({datacenter_id: datacenter_id, role: 'proxy'}).order("servers.number");
   return DB.query(serversQuery.toParam())
 };
 
-const _assignIps = function(datacenter_id,ips,serversFunction){
-  return serversFunction(datacenter_id).then(servers => {
+const _assignServerIps = function(ips){
+  return Promise.map(ips,(ip) => {
+    let assignment = ip.split(",");
+    return ServerAssignments.create(assignment[0],assignment[1]);
+  });
+};
+
+const _assignProxyIps = function(datacenter_id,ips){
+  return _getProxyServers(datacenter_id).then( servers => {
     if(servers.length > 0){
       let nper = Math.max(Math.floor(ips.length / servers.length),1);
       return Promise.map(ips,(ip,i) => {
         let serverIndex = Math.min(Math.floor(i/nper),servers.length - 1);
-        return ServerAssignments.create(servers[serverIndex].id,ip)
-      },{concurrency: 10});
+        return ServerAssignments.create(servers[serverIndex].code,ip);
+      });
     } else {
-      return Promise.resolve()
+      return Promise.resolve();
     }
 
   })
-};
+}
+
 
 module.exports = ServerAssignmentsController;

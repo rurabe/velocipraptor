@@ -4,7 +4,7 @@ var type = dbm.dataType;
 exports.up = function(db, callback) {
   db.runSql("create index index_gist_ip_on_servers on servers using gist (ip inet_ops);",function(){
     db.runSql("create index index_datacenter_id_on_servers on servers (datacenter_id);",function(){
-      db.runSql("create index index_code_on_servers on servers (code);",callback);
+      db.runSql("create unique index index_code_on_servers on servers (code);",callback);
     });
   });
 };
