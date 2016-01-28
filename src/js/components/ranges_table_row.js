@@ -22,7 +22,7 @@ const RangesTableRow = React.createClass({
     );
   },
   _unassign: function(rangeId){
-    RangesActions.destroy(rangeId)
+    RangesActions.destroy(rangeId);
   }
 });
 

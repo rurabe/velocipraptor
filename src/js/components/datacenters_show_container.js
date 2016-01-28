@@ -26,10 +26,13 @@ class DatacentersShowContainer extends React.Component {
   static calculateState(prevState,props){
     let datacenter_id = parseInt(props.routeParams.datacenter_id);
     let datacenter = DatacentersStore.get(datacenter_id.toString());
-    let ranges = RangesStore.getState().filter(range => range.get('datacenter_id') === datacenter_id).toIndexedSeq();
+    let ranges = RangesStore.getState()
+      .filter(range => range.get('datacenter_id') === datacenter_id)
+      .sort(SubnetHelpers.sort(r => r.get('ips')))
+      .toIndexedSeq();
     let servers = ServersStore.getState()
       .filter(server => server.get('datacenter_id') === datacenter_id)
-      .sortBy(s => s.get('number'));
+      .sortBy(s => s.get('code'));
     let addresses = AddressesStore.getState()
       .filter( address => {
         let server_id = address.get('server_id')

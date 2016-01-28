@@ -120,7 +120,7 @@ const _sort = function(accessor){
   return (a,b) => {
     let aa = _parse(accessor ? accessor(a) : a);
     let ba = _parse(accessor ? accessor(b) : b);
-    for(let i=0;i<4;i++){
+    for(let i=1;i<5;i++){
       let an = parseInt(aa[i]);
       let bn = parseInt(ba[i]);
       if( an < bn ){ return -1 }

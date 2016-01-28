@@ -9,7 +9,11 @@ class AddressesStore extends MapStore {
       case 'addresses.state':
         return Immutable.fromJS(action.addresses);
       case 'addresses.merge':
-        return state.mergeDeep(Immutable.fromJS(action.addresses));
+        return state.merge(Immutable.fromJS(action.addresses));
+      case 'ranges.remove':
+        let rangeIds = Object.keys(action.ranges).map(parseInt);
+        console.log(rangeIds)
+        return state.filter( a => !rangeIds.includes(a.get('range_id')) )
       default:
         return state;
     }

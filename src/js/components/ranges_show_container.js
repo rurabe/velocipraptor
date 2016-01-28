@@ -15,7 +15,7 @@ const PullsActions = require('../actions/pulls_actions');
 
 const RangesShow = require('./ranges_show');
 
-
+const SubnetHelpers = require('../helpers/subnet_helpers');
 
 class RangesShowContainer extends React.Component {
   static getStores(){
@@ -27,7 +27,9 @@ class RangesShowContainer extends React.Component {
     let range_id = parseInt(props.routeParams.range_id);
     let datacenter = DatacentersStore.get(datacenter_id.toString());
     let range = RangesStore.get(range_id.toString());
-    let addresses = AddressesStore.getState().filter( a => a.get('range_id') === range_id ).sortBy(a => a.get('ip'))
+    let addresses = AddressesStore.getState()
+      .filter( a => a.get('range_id') === range_id )
+      .sort(SubnetHelpers.sort(a => a.get('ip')))
     return {
       datacenter: datacenter,
       range: range,

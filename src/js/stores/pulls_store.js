@@ -9,7 +9,7 @@ class PullsStore extends MapStore {
       case 'addresses.state':
         return Immutable.fromJS(action.pulls);
       case 'addresses.merge':
-        return state.mergeDeep(Immutable.fromJS(action.pulls));
+        return state.merge(Immutable.fromJS(action.pulls));
       default:
         return state;
     }

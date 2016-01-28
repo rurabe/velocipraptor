@@ -9,10 +9,10 @@ class RangesStore extends MapStore {
       case 'ranges.state':
         return Immutable.fromJS(action.ranges);
       case 'ranges.merge':
-        return state.mergeDeep(Immutable.fromJS(action.ranges));
+        return state.merge(Immutable.fromJS(action.ranges));
       case 'ranges.remove':
         console.log(action)
-        return Object.keys(action.ranges).reduce( (s,k) => { return s.delete(k) },state)
+        return Object.keys(action.ranges).reduce( (st,k) => { return st.delete(k) },state)
       default:
         return state;
     }
