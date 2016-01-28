@@ -16,7 +16,7 @@ const RangesTableRow = React.createClass({
         <EditableTableCell value={r.notes} attr='notes' onUpdate={onUpdate}/>
         <td className="ranges-table-actions table-actions">
           <ActionIcon icon="times" onClick={this._unassign.bind(this,r.id)} />
-        </td> 
+        </td>
       </tr>
     );
   },

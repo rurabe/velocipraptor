@@ -106,9 +106,9 @@ const _bits = function(mask){
 const _assignToServers = function(ips,servs){
   if(servs && servs.size > 0){
     let servers = servs.toIndexedSeq();
-    let nper = Math.max(Math.floor(ips.length / servers.size),1);
+    let nper = Math.max(ips.length / servers.size,1);
     return ips.map( (ip,i) => {
-      let server = servers.get(Math.min(Math.floor(i/nper),servers.size - 1));
+      let server = servers.get(Math.min(Math.round(i/nper),servers.size - 1));
       return [server.get("code"),ip].join(",");
     });
   } else {
