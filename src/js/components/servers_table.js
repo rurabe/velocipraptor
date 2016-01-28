@@ -17,7 +17,7 @@ const ServersTable = React.createClass({
 
     return (
       <table className="table table-condensed table-striped table-bordered servers-table">
-        <TableHead columns={['id','number','code','ip','role','notes']} actions={true} />
+        <TableHead columns={['code','ip','notes']} actions={true} />
         <tbody>
           {ticketServers}
           {proxyServers}
