@@ -13,7 +13,7 @@ const EditableTableCell = React.createClass({
   },
   render: function(){
     if(this.state.editing){
-      return <td className="editable-table-cell" onDoubleClick={this._toggleEditing} onBlur={this._onBlur}><textarea ref="input" onChange={this._onChange} onKeyDown={this._onKeyDown} value={this.state.val} /></td>
+      return <td className="editable-table-cell" onDoubleClick={this._toggleEditing} onBlur={this._onBlur}><textarea ref="input" onChange={this._onChange} onKeyDown={this._onKeyDown} value={this.state.val} rows="3"/></td>
     } else if(this.props.link) {
       return <td className="editable-table-cell" onDoubleClick={this._toggleEditing}><Link to={this.props.link}>{this.state.val}</Link></td>
     } else {
@@ -28,7 +28,7 @@ const EditableTableCell = React.createClass({
     this.setState({val: e.target.value});
   },
   _onKeyDown: function(e){
-    if(e.keyCode === 13){ this.refs.input.blur() }
+    if(!(e.altKey || e.shiftKey || e.ctrlKey) && e.keyCode === 13){ this.refs.input.blur() }
   },
   _onBlur: function(e){
     let update = {};

@@ -44,7 +44,6 @@ const ServersShow = React.createClass({
                 </tr>
               </tbody>
             </table>
-            <p>{s.notes}</p>
           </Col>
         </Row>
         <Row>

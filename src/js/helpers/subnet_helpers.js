@@ -116,6 +116,19 @@ const _assignToServers = function(ips,servs){
   }
 };
 
+const _sort = function(accessor){
+  return (a,b) => {
+    let aa = _parse(accessor ? accessor(a) : a);
+    let ba = _parse(accessor ? accessor(b) : b);
+    for(let i=0;i<4;i++){
+      let an = parseInt(aa[i]);
+      let bn = parseInt(ba[i]);
+      if( an < bn ){ return -1 }
+      if( an > bn ){ return 1  }
+    }
+  }
+}
+
 const SubnetHelpers = {
   split: function(input,servers){
     let ranges = input.split(/(\s*[\n\,]\s*)+/)
@@ -138,6 +151,7 @@ const SubnetHelpers = {
       ranges: ranges
     }
   },
+  sort: _sort,
   mask: _mask,
   bits: _bits,
   parse: _parse,

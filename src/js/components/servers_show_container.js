@@ -27,7 +27,9 @@ class ServersShowContainer extends React.Component {
     let server_id = parseInt(props.routeParams.server_id);
     let datacenter = DatacentersStore.get(datacenter_id.toString());
     let server = ServersStore.get(server_id.toString());
-    let addresses = AddressesStore.getState().filter( a => a.get('server_id') === server_id ).sortBy(a => a.get('ip'))
+    let addresses = AddressesStore.getState()
+      .filter( a => a.get('server_id') === server_id )
+      .sort(SubnetHelpers.sort( a => a.get("ip") ))
 
     let datacenter_ips_function = function(){
       let servers = ServersStore.getState().filter(server => server.get('datacenter_id') === datacenter_id);
