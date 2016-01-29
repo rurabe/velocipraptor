@@ -26,6 +26,8 @@ const DialogAddRanges = React.createClass({
       axs: '',
       ranges: [],
       addedAddresses: {},
+      added: false,
+      submitted: false,
     }
   },
   render: function(){
@@ -43,6 +45,18 @@ const DialogAddRanges = React.createClass({
 
     let proxyCount = this.props.servers.count(s => s.get('role') === 'proxy');
     let serverCount = this.props.servers.count(s => s.get('role') !== 'proxy');
+    let formStyle = this.state.submitted ? 'success' : 'warning'
+
+    let addMessage;
+    let assignMessage;
+
+    if(this.state.added && !this.state.submitted){
+      addMessage = <span className="warning btn-message">Don't forget to assign!</span>
+    }
+
+    if(this.state.submitted){
+      assignMessage = <span className="success btn-message">{Object.keys(this.state.addedAddresses).length} ips assigned.</span>
+    }
 
     return (
       <div className="dialog-add-ranges">
@@ -55,6 +69,7 @@ const DialogAddRanges = React.createClass({
               <h4>Add ranges</h4>
               <Input type="textarea" label="Ranges" placeholder="e.g. 192.168.1.0/24" rows="3" ref="ranges"/>
               <button className="btn btn-sm btn-primary" onClick={this._split}>Add</button>
+              {addMessage}
             </Col>
           </Row>
           <hr />
@@ -66,23 +81,24 @@ const DialogAddRanges = React.createClass({
           <Row>
             <Col md={4}>
               <div>
-                <Input type="textarea" label={`Servers (${this._count(this.state.servers)})`} rows="5" ref="servers" value={this.state.servers} onChange={this._updateState.bind(this,'servers')}/>
+                <Input type="textarea" label={`Servers (${this._count(this.state.servers)})`} rows="5" ref="servers" value={this.state.servers} onChange={this._updateState.bind(this,'servers')} bsStyle={formStyle}/>
               </div>
             </Col>
             <Col md={4}>
               <div>
-                <Input type="textarea" label={`Proxies (${this._count(this.state.proxies)})`} rows="5" ref="proxies" value={this.state.proxies} onChange={this._updateState.bind(this,'proxies')}/>
+                <Input type="textarea" label={`Proxies (${this._count(this.state.proxies)})`} rows="5" ref="proxies" value={this.state.proxies} onChange={this._updateState.bind(this,'proxies')} bsStyle={formStyle}/>
               </div>
             </Col>
             <Col md={4}>
               <div>
-                <Input type="textarea" label={`AXS (${this._count(this.state.axs)})`} rows="5" ref="axs" value={this.state.axs} onChange={this._updateState.bind(this,'axs')}/>
+                <Input type="textarea" label={`AXS (${this._count(this.state.axs)})`} rows="5" ref="axs" value={this.state.axs} onChange={this._updateState.bind(this,'axs')} bsStyle={formStyle}/>
               </div>
             </Col>
           </Row>
           <Row>
             <Col md={12}>
               <button className="btn btn-sm btn-primary" onClick={this._assign}>Assign</button>
+              {assignMessage}
             </Col>
           </Row>
           <hr />
@@ -109,18 +125,20 @@ const DialogAddRanges = React.createClass({
       proxies: splits.proxies.join("\n"),
       axs: splits.axs.join("\n"),
       ranges: splits.ranges,
+      added: true,
     });
   },
   _assign: function(){
     let dcid = this.props.datacenter.get('id');
+    let proxiesExist = this.props.servers.count(s => s.get('role') === 'proxy') > 0;
     Promise.map(this.state.ranges,r => RangesActions.create({datacenter_id: dcid, ips: r})).then( (res) => {
       return ServerAssignmentsActions.create(dcid,{
         servers: this.state.servers.split("\n").filter( ip => ip ).map(_formatServerAssignment),
-        proxies: this.state.proxies.split("\n").filter( ip => ip ).map(SubnetHelpers.maskToInet),
+        proxies: (proxiesExist ? this.state.proxies.split("\n").filter( ip => ip ).map(SubnetHelpers.maskToInet) : []),
         axs: this.state.axs.split("\n").filter( ip => ip ).map(SubnetHelpers.maskToInet)
       });
     }).then( payload => {
-      this.setState({addedAddresses: payload.addresses });
+      this.setState({addedAddresses: payload.addresses, submitted: true });
     });
   },
   _updateState: function(attr,e){
