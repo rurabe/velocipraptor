@@ -102,7 +102,8 @@ const DialogAddRanges = React.createClass({
   },
   _split: function(){
     let servers = this.props.servers.groupBy(s => s.get('role'));
-    let splits = SubnetHelpers.split(this.refs.ranges.refs.input.value,servers.get(null),servers.get('proxy'));
+    let ranges = this.refs.ranges.refs.input.value;
+    let splits = SubnetHelpers.split(ranges,servers.get(null),servers.get('proxy'));
     this.setState({
       servers: splits.servers.join("\n"),
       proxies: splits.proxies.join("\n"),

@@ -1,9 +1,12 @@
+'use strict';
+
            require('dotenv').load();
 const pg = require('pg');
 const Promise = require('bluebird');
 const squel = require('squel').useFlavour('postgres');
 
 const pgAddress = process.env.DATABASE_URL;
+const DBError = require('./errors/db_error');
 
 const _query = function(preparedStatement){
   console.log(preparedStatement)
@@ -11,7 +14,8 @@ const _query = function(preparedStatement){
     pg.connect(pgAddress,function(err,client,done){
       client.query(preparedStatement,function(e,r){
         done();
-        if(e){ console.log(e,preparedStatement);reject(preparedStatement) }else{resolve(r.rows);}
+        if(e){ console.log(e,preparedStatement); reject(new DBError(e)) }
+        else { resolve(r.rows); }
       });
     });
   });

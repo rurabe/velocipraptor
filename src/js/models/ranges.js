@@ -18,8 +18,7 @@ const Ranges = {
     return QueryHelpers.filter(q,params);
   },
   create: function(params){
-    params = Object.assign({created_at: 'now()'},params)
-    let i = `INSERT INTO ranges (datacenter_id,ips) VALUES ($1,$2) ON CONFLICT DO NOTHING RETURNING ${_fields};`
+    let i = `INSERT INTO ranges (datacenter_id,ips) VALUES ($1,$2) ON CONFLICT(ips) DO UPDATE set datacenter_id = $1 RETURNING ${_fields};`
     return DB.query({text: i, values: [params.datacenter_id,params.ips]}).then(_jsonize);
   },
   update: function(id,update){

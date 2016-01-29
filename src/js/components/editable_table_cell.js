@@ -32,8 +32,9 @@ const EditableTableCell = React.createClass({
   },
   _onBlur: function(e){
     let update = {};
+    let oldVal = this.props.value;
     update[this.props.attr] = this.state.val;
-    this.props.onUpdate(update);
+    this.props.onUpdate(update).catch(e => this.setState({val: oldVal}));
     this._toggleEditing();
   },
 });
