@@ -58,7 +58,7 @@ const ServersShow = React.createClass({
   },
   _copyAddresses: function(trigger){
     if(this.props.server.get('role') === 'proxy'){
-      return this.props.addresses.map(a => SubnetHelpers.inetToMask(a.get('ip')) ).join("\n");
+      return this.props.addresses.sort(SubnetHelpers.sort(a => a.get('ip'))).map(a => SubnetHelpers.inetToMask(a.get('ip')) ).join("\n");
     } else {
       return this.props.datacenter_ips_function();
     }

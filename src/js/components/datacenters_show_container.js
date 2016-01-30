@@ -48,7 +48,7 @@ class DatacentersShowContainer extends React.Component {
         return servers.getIn([server_id,'role']) !== 'proxy';
       }).sortBy( a => {
         let server_id = a.get('server_id').toString();
-        return servers.getIn([server_id,'number']);
+        return servers.getIn([server_id,'code']);
       }).map( a => {
         let server_id = a.get('server_id').toString();
         return [servers.getIn([server_id,'code']),SubnetHelpers.inetToMask(a.get('ip'))].join(",");
