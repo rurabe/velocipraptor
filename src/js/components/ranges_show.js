@@ -29,7 +29,7 @@ const RangesShow = React.createClass({
         </Row>
         <Row>
           <Col md={12}>
-            <AddressesTable addresses={this.props.addresses}/>
+            <AddressesTable addresses={this.props.addresses} servers={this.props.servers} datacenterId={dc.id}/>
           </Col>
         </Row>
       </div>

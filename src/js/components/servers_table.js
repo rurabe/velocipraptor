@@ -7,8 +7,8 @@ const ServersTable = React.createClass({
   render: function(){
     let datacenterId = this.props.datacenter.get('id');
 
-    let ticketServers = this.props.servers.filter(s => s.get('role') !== 'proxy').map( s => {
-      return <ServersTableRow server={s} key={s.get('id')} datacenterId={datacenterId}/>
+    let ticketServers = this.props.servers.filter( s => s.get('role') !== 'proxy').map( (s,i) => {
+      return <ServersTableRow server={s} key={s.get('id')} datacenterId={datacenterId} i={i+1}/>
     });
 
     let proxyServers = this.props.servers.filter(s => s.get('role') === 'proxy').map( s => {
@@ -17,7 +17,7 @@ const ServersTable = React.createClass({
 
     return (
       <table className="table table-condensed table-striped table-bordered servers-table">
-        <TableHead columns={['code','ip','notes']} actions={true} />
+        <TableHead columns={['no','code','ip','notes']} actions={true} />
         <tbody>
           {ticketServers}
           {proxyServers}

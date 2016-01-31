@@ -27,6 +27,7 @@ const ServersShow = React.createClass({
         <Row>
           <Col md={12}>
             <h1>Server {s.code}</h1>
+            <h4>{this.props.addresses.size} ips assigned</h4>
             <ClipboardButton label="Copy IPs" text={this._copyAddresses} className="btn btn-primary" />
             <table className="table table-condensed table-bordered server-table">
               <tbody>
@@ -48,7 +49,7 @@ const ServersShow = React.createClass({
         </Row>
         <Row>
           <Col md={12}>
-            <AddressesTable addresses={this.props.addresses}/>
+            <AddressesTable addresses={this.props.addresses} ranges={this.props.ranges} datacenterId={dc.id}/>
             <ClipboardButton label="Copy IPs" text={this._copyAddresses} className="btn btn-primary" />
           </Col>
         </Row>

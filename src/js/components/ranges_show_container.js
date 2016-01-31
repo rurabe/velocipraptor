@@ -11,6 +11,7 @@ const AddressesStore = require('../stores/addresses_store');
 const DatacentersActions = require('../actions/datacenters_actions');
 const RangesActions = require('../actions/ranges_actions');
 const AddressesActions = require('../actions/addresses_actions');
+const ServersActions = require('../actions/servers_actions');
 const PullsActions = require('../actions/pulls_actions');
 
 const RangesShow = require('./ranges_show');
@@ -27,6 +28,9 @@ class RangesShowContainer extends React.Component {
     let range_id = parseInt(props.routeParams.range_id);
     let datacenter = DatacentersStore.get(datacenter_id.toString());
     let range = RangesStore.get(range_id.toString());
+    let servers = ServersStore.getState()
+      .filter(server => server.get('datacenter_id') === datacenter_id)
+      .sortBy(s => s.get('code'));
     let addresses = AddressesStore.getState()
       .filter( a => a.get('range_id') === range_id )
       .sort(SubnetHelpers.sort(a => a.get('ip')))
@@ -34,6 +38,7 @@ class RangesShowContainer extends React.Component {
       datacenter: datacenter,
       range: range,
       addresses: addresses.toIndexedSeq(),
+      servers: servers,
       user: props.user
     }
   }
@@ -44,6 +49,7 @@ class RangesShowContainer extends React.Component {
     DatacentersActions.index({id: datacenter_id});
     RangesActions.index({id: range_id});
     AddressesActions.index({range_id: range_id});
+    ServersActions.index({datacenter_id: datacenter_id})
   }
 
   render(){

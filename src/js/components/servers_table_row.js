@@ -11,6 +11,7 @@ const ServersTableRow = React.createClass({
     let onUpdate = ServersActions.update.bind(this,s.id);
     return (
       <tr data-id={s.id}>
+        <td>{this.props.i}</td>
         <EditableTableCell value={s.code} attr='code' onUpdate={onUpdate} link={`/datacenters/${this.props.datacenterId}/servers/${s.id}`}/>
         <EditableTableCell value={s.ip} attr='ip' onUpdate={onUpdate}/>
         <EditableTableCell value={s.notes} attr='notes' onUpdate={onUpdate}/>

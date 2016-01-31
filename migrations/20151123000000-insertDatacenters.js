@@ -4,8 +4,8 @@ var dbm = global.dbm || require('db-migrate');
 var type = dbm.dataType;
 
 var DATA = [
-  ['PhoenixNap','Phoenix'],
-  ['PhoenixNap','Ashburn'],
+  ['PhoenixNapPhx','Phoenix'],
+  ['PhoenixNapAsh','Ashburn'],
   ['VPS','Ashburn'],
   ['VPS','Phoenix'],
   ['VPS Colo@','Ashburn'],
