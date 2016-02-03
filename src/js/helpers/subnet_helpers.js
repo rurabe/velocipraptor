@@ -131,7 +131,7 @@ const _sort = function(accessor){
 
 const SubnetHelpers = {
   split: function(input,servers){
-    let ranges = input.split(/(\s*[\n\,]\s*)+/).filter(range => range)
+    let ranges = input.split(/\n|\r/).filter(range => range)
     let cs = ranges.reduce( (a,r) => { 
       let s = new Subnet(r);
       return a.concat(s.cs());
