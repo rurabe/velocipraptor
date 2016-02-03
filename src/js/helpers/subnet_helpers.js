@@ -1,5 +1,7 @@
 'use strict';
 
+const _ = require('lodash');
+
 const SUBNETS = {
   '30': '255.255.255.252',
   '29': '255.255.255.248',
@@ -138,14 +140,14 @@ const SubnetHelpers = {
     },[]);
 
     let ips = cs.map( (c,i) => c.generate(i) ).reduce( (obj,i) => {
-      obj.servers = obj.servers.concat(i.servers);
+      obj.servers = _.shuffle(obj.servers.concat(i.servers));
       obj.proxies = obj.proxies.concat(i.proxies);
       obj.axs     = obj.axs.concat(i.axs);
       return obj;
     },{servers: [], proxies: [], axs: []})
 
     return {
-      servers: _assignToServers(ips.servers,servers),
+      servers: _assignToServers(ips.servers,servers).sort(),
       proxies: ips.proxies,
       axs: ips.axs,
       ranges: ranges
