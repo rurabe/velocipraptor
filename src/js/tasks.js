@@ -23,6 +23,7 @@ const Tasks = {
   },
   recurringTasks: { // in seconds
     180: function(){
+      console.log("fetching threads")
       ThreadLog.importLatest()
     },
   },
