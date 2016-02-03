@@ -9,7 +9,6 @@ const pgAddress = process.env.DATABASE_URL;
 const DBError = require('./errors/db_error');
 
 const _query = function(preparedStatement){
-  console.log(preparedStatement)
   return new Promise(function(resolve,reject){
     pg.connect(pgAddress,function(err,client,done){
       client.query(preparedStatement,function(e,r){
