@@ -1,4 +1,6 @@
 'use strict';
+const _ = require('lodash')
+
 const SUBNETS = {
   '30': '255.255.255.252',
   '29': '255.255.255.248',
@@ -106,11 +108,10 @@ const _bits = function(mask){
 const _assignToServers = function(ips,servs){
   if(servs && servs.size > 0){
     let servers = servs.toIndexedSeq();
-    let nper = Math.max(ips.length / servers.size,1);
     return ips.map( (ip,i) => {
-      let server = servers.get(Math.min(Math.round(i/nper),servers.size - 1));
+      let server = servers.get(i%servers.size);
       return [server.get("code"),ip].join(",");
-    });
+    }).sort();
   } else {
     return ips.map( ip => [null,ip].join(","));
   }

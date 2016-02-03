@@ -6,7 +6,7 @@ const _dr = Dispatcher.dispatchRequest;
 const RangesActions = {
   index: function(query){
     return new Promise(function(resolve,reject){
-      request.get(`/api/ranges`).query(query).end(_dr.bind(this,'ranges.merge',resolve,reject));
+      request.get(`/api/ranges`).query(query).end(_dr.bind(this,'ranges.state',resolve,reject));
     });
   },
   create: function(params){

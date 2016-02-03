@@ -33,6 +33,7 @@
     "history": "^1.13.1",
     "immutable": "^3.7.5",
     "jade": "^1.11.0",
+    "lodash": "^4.2.1",
     "moment": "^2.10.6",
     "moment-timezone": "^0.4.1",
     "mysql": "^2.9.0",

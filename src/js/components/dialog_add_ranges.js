@@ -81,7 +81,7 @@ const DialogAddRanges = React.createClass({
           <Row>
             <Col md={4}>
               <div>
-                <Input type="textarea" label={`Servers (${this._count(this.state.servers)})`} rows="5" ref="servers" value={this.state.servers} onChange={this._updateState.bind(this,'servers')} bsStyle={formStyle}/>
+                <Input type="textarea" label={`TM (${this._count(this.state.servers)})`} rows="5" ref="servers" value={this.state.servers} onChange={this._updateState.bind(this,'servers')} bsStyle={formStyle}/>
               </div>
             </Col>
             <Col md={4}>
