@@ -89,12 +89,12 @@ const ThreadLog = {
   },
   importLatest: function(){
     return this.getLatest().then( (latest) => {
-      console.log("getting",latest[0].thread_log_id,"to",latest[latest.length - 1].thread_log_id);
+      if(latest[0]){ console.log("fetched",latest[0].thread_log_id,"to",latest[latest.length - 1].thread_log_id); }
       return Promise.map(latest, (row) => {
         return DB.query(squel.useFlavour('postgres').insert().into("pulls").setFields(row).toParam()).catch(e => {
           console.log("[ThreadLog] Insert failed:",row)
         });
-      }).then( () => {
+      }).then( () => {        
         if(latest.length === 100){ return this.importLatest() }
         else { return latest; }
       })
