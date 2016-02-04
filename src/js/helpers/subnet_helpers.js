@@ -108,10 +108,10 @@ const _bits = function(mask){
 
 const _assignToServers = function(ips,servs){
   if(servs && servs.size > 0){
-    let servers = servs.toIndexedSeq();
+    let servers = _.shuffle(servs.toList().toJS());
     return ips.map( (ip,i) => {
-      let server = servers.get(i%servers.size);
-      return [server.get("code"),ip].join(",");
+      let server = servers[i%servers.length];
+      return [server.code,ip].join(",");
     }).sort();
   } else {
     return ips.map( ip => [null,ip].join(","));
