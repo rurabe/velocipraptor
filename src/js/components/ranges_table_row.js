@@ -22,7 +22,9 @@ const RangesTableRow = React.createClass({
     );
   },
   _unassign: function(rangeId){
-    RangesActions.destroy(rangeId);
+    if(confirm(`Are you sure you want to delete range ${this.props.range.get('ips')}?`)){
+      RangesActions.destroy(rangeId);
+    }
   }
 });
 
