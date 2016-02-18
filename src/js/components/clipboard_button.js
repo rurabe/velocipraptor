@@ -12,7 +12,7 @@ const ClipboardButton = React.createClass({
   },
   render: function(){
     return (
-      <button ref="trigger" className={this.props.className}>
+      <button ref="trigger" className={this.props.className} disabled={this.props.disabled}>
         {this.props.label}
       </button>
     );
