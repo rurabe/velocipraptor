@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {Input} = require('react-bootstrap');
+const {FormControl} = require('react-bootstrap');
 
 const SpeedLimit = require('../mixins/speed_limit');
 
@@ -12,7 +12,7 @@ const SpeedLimitInput = React.createClass({
   },
   render: function(){
     return (
-      <Input {...this.props} value={this.state.value} onChange={this._onChange}/>
+      <FormControl {...this.props} value={this.state.value||''} onChange={this._onChange}/>
     );
   },
   _onChange: function(e){

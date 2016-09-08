@@ -18,6 +18,9 @@ const SubnetHelpers = require('../helpers/subnet_helpers');
 const DatacentersShow = React.createClass({
   render: function(){
     let dc = this.props.datacenter.toJSON();
+    const size = this.props.ranges.map(r => SubnetHelpers.size(r.get('ips'))).toJSON().reduce((s,n) => {return s += n},0);
+    const twentyfours = Math.round(size / 128) / 2;
+
     return (
       <div id="datacenters-show">
         <Row>
@@ -37,7 +40,7 @@ const DatacentersShow = React.createClass({
         </Row>
         <Row>
           <Col md={6}>
-            <h4>Ranges</h4>
+            <h4>Ranges ({twentyfours} total)</h4>
             <div className="ranges-actions">
               <button className="btn btn-sm btn-success" onClick={this._addRange}>Add Ranges</button>
             </div>

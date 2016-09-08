@@ -19,7 +19,7 @@ const Navbar  = React.createClass({
             
           </B.Nav>
           <B.Nav pullRight>
-            <B.MenuItem eventKey={3.3} onSelect={this._logout}>Logout</B.MenuItem>
+            <B.NavItem eventKey={1} onClick={this._logout}>Logout</B.NavItem>
           </B.Nav>
         </B.Navbar.Collapse>
       </B.Navbar>

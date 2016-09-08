@@ -168,7 +168,13 @@ const SubnetHelpers = {
   host: function(inet){
     let i = _parse(inet);
     return [i[1],i[2],i[3],i[4]].join(".");
+  },
+  size: function(inet){
+    let n = parseInt(_parse(inet)[5]);
+    return Math.pow(2,32-n);
   }
 };
+
+window.SubnetHelpers = SubnetHelpers
 
 module.exports = SubnetHelpers;

@@ -1,9 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {Router,Route,IndexRoute} = require('react-router');
-
-const browserHistory = require('history/lib/createBrowserHistory');
+const {Router,Route,IndexRoute,browserHistory} = require('react-router');
 
 
 const AppLayout = require('./app_layout');
@@ -16,7 +14,7 @@ const ServersShowContainer = require('./servers_show_container');
 const AppRouter = React.createClass({
   render: function(){
     return (
-      <Router history={browserHistory()} >
+      <Router history={browserHistory} >
         <Route path="/" component={AppLayout} >
           <IndexRoute component={DatacentersIndexContainer} />
           <Route path="datacenters/:datacenter_id" component={DatacentersShowContainer}/>
