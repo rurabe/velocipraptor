@@ -5,6 +5,7 @@ const IndexController = require('./controllers/index_controller');
 const AddressesController = require('./controllers/addresses_controller');
 const DatacentersController = require('./controllers/datacenters_controller');
 const RangesController = require('./controllers/ranges_controller');
+const RangesRotationController = require('./controllers/ranges_rotation_controller');
 const ServersController = require('./controllers/servers_controller');
 const ServerAssignmentsController = require('./controllers/server_assignments_controller');
 
@@ -53,11 +54,15 @@ const Routes = {
     api.post('/datacenters',DatacentersController.create);
     api.put('/datacenters/:id',DatacentersController.update);
     api.delete('/datacenters/:id',DatacentersController.destroy);
+
+    api.get('/datacenters/:id/rotation',RangesRotationController.index);
     
     api.get('/ranges',RangesController.index);
     api.post('/ranges',RangesController.create);
     api.put('/ranges/:id',RangesController.update);
     api.delete('/ranges/:id',RangesController.destroy);
+
+
     
     api.get('/servers',ServersController.index);
     api.post('/servers',ServersController.create);

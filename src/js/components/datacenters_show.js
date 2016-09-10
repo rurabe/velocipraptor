@@ -35,7 +35,7 @@ const DatacentersShow = React.createClass({
             <ClipboardButton label="Copy IPs" text={this.props.datacenter_ips_function} className="btn btn-primary" />
           </Col>
           <Col md={6}>
-            <SpeedLimitInput value={dc.notes} rows="5" type="textarea" placeholder="notes" onChange={this._onNotesChange}/>
+            <SpeedLimitInput value={dc.notes} rows="5" componentClass="textarea" placeholder="notes" onChange={this._onNotesChange}/>
           </Col>
         </Row>
         <Row>

@@ -47,7 +47,7 @@ class RangesShowContainer extends React.Component {
     let datacenter_id = this.props.routeParams.datacenter_id;
     let range_id = this.props.routeParams.range_id;
     DatacentersActions.index({id: datacenter_id});
-    RangesActions.index({id: range_id});
+    RangesActions.index({"ranges.id": range_id});
     AddressesActions.index({range_id: range_id});
     ServersActions.index({datacenter_id: datacenter_id})
   }

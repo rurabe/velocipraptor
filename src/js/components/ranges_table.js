@@ -7,13 +7,13 @@ const RangesTable = React.createClass({
   render: function(){
     let datacenterId = this.props.datacenter.get('id');
 
-    let rows = this.props.ranges.map( (r,i) => {
+    let rows = this.props.ranges.sortBy(r => r.get('last_used') ).reverse().map( (r,i) => {
       return <RangesTableRow range={r} key={r.get('id')} datacenterId={datacenterId} i={i+1}/>
     });
 
     return (
       <table className="table table-condensed table-striped table-bordered ranges-table">
-        <TableHead columns={['no','range','notes']} actions={true}/>
+        <TableHead columns={['no','range','rate','recent rate','last used','notes']} actions={true}/>
         <tbody>
           {rows}
         </tbody>
