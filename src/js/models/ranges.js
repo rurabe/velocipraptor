@@ -58,7 +58,7 @@ const Ranges = {
       select distinct regexp_replace((ip & inet '255.255.255.0')::text,'\\.0/\\d\\d','') as ip,last_used from rested_addresses;
     `
     return DB.query({text: text, values: [datacenter_id]}).then(rows => {
-      return rows.sort((a,b) => a && a.last_used > b.last_used ? -1 : 1 ).map(r => r.ip)
+      return rows.sort((a,b) => a && a.last_used > b.last_used ? -1 : 1 )
     });
   }
 };

@@ -8,6 +8,7 @@ const RangesStore = require('../stores/ranges_store');
 const ServersStore = require('../stores/servers_store');
 const AddressesStore = require('../stores/addresses_store');
 const PageStore = require('../stores/page_store');
+const RotationsStore = require('../stores/rotations_store');
 
 const DatacentersActions = require('../actions/datacenters_actions');
 const RangesActions = require('../actions/ranges_actions');
@@ -20,7 +21,7 @@ const SubnetHelpers = require('../helpers/subnet_helpers');
 
 class DatacentersShowContainer extends React.Component {
   static getStores(){
-    return [DatacentersStore,RangesStore,ServersStore,AddressesStore,PageStore];
+    return [DatacentersStore,RangesStore,ServersStore,AddressesStore,PageStore,RotationsStore];
   }
 
   static calculateState(prevState,props){
@@ -55,6 +56,8 @@ class DatacentersShowContainer extends React.Component {
       }).join("\n") || "no ips";
     };
 
+    let rotation = RotationsStore.getState().get('rotation');
+
     return {
       datacenter: datacenter,
       ranges: ranges,
@@ -63,6 +66,7 @@ class DatacentersShowContainer extends React.Component {
       page: page,
       user: props.user,
       datacenter_ips_function: datacenter_ips_function,
+      rotation: rotation,
     };
   }
 
@@ -72,7 +76,7 @@ class DatacentersShowContainer extends React.Component {
     RangesActions.index({datacenter_id: datacenter_id});
     ServersActions.index({datacenter_id: datacenter_id}).then( response => {
       return AddressesActions.index({server_id: Object.keys(response.servers)});
-    })
+    });
   }
 
   render(){
