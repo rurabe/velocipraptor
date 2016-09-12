@@ -43,7 +43,7 @@ const Ranges = {
     let text = `
       with
       ips_count as (
-        select (count(*) * 350) as count from servers where datacenter_id = 8 and role is null
+        select (count(*) * 350) as count from servers where datacenter_id = $1 and role is null
       ), 
       all_ranges as (
         ${this.select({datacenter_id: datacenter_id}).toParam().text}
