@@ -1,5 +1,6 @@
 'use strict';
 
+var dotenv = require('dotenv').load();
 var gulp = require('gulp');
 var watchify = require('watchify');
 var browserify = require('browserify');
@@ -11,6 +12,7 @@ var uglifycss = require('gulp-uglifycss');
 var uglify = require('gulp-uglify');
 
 var bundlejs = function(bfy) {
+  process.stdout.write(`bundling for ${process.env.NODE_ENV}\n`);
   return bfy.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
     .pipe(source('app.js'))
@@ -46,7 +48,6 @@ gulp.task('watch',function(){
 gulp.task('default',['js','css']);
 
 gulp.task('productionify',['default'],function(){
-  process.env.NODE_ENV = 'production';
   return [
     gulp.src('public/app.js')
       .pipe(uglify())
