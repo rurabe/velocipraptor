@@ -46,6 +46,7 @@ gulp.task('watch',function(){
 gulp.task('default',['js','css']);
 
 gulp.task('productionify',['default'],function(){
+  process.env.NODE_ENV = 'production';
   return [
     gulp.src('public/app.js')
       .pipe(uglify())
