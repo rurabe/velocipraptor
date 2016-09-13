@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const ReactDOM = require('react-dom');
 const Promise = require('bluebird');
 const Immutable = require('immutable');
 
@@ -67,7 +68,7 @@ const DialogAddRanges = React.createClass({
           <Row>
             <Col md={12}>
               <h4>Add ranges</h4>
-              <FormControl type="textarea" label="Ranges" placeholder="e.g. 192.168.1.0/24" rows="3" ref="ranges"/>
+              <FormControl componentClass="textarea" label="Ranges" placeholder="e.g. 192.168.1.0/24" rows="3" ref="ranges"/>
               <button className="btn btn-sm btn-primary" onClick={this._split}>Add</button>
               {addMessage}
             </Col>
@@ -81,17 +82,17 @@ const DialogAddRanges = React.createClass({
           <Row>
             <Col md={4}>
               <div>
-                <FormControl type="textarea" label={`TM (${this._count(this.state.servers)})`} rows="5" ref="servers" value={this.state.servers} onChange={this._updateState.bind(this,'servers')} bsStyle={formStyle}/>
+                <FormControl componentClass="textarea" label={`TM (${this._count(this.state.servers)})`} rows="5" ref="servers" value={this.state.servers} onChange={this._updateState.bind(this,'servers')} bsStyle={formStyle}/>
               </div>
             </Col>
             <Col md={4}>
               <div>
-                <FormControl type="textarea" label={`Proxies (${this._count(this.state.proxies)})`} rows="5" ref="proxies" value={this.state.proxies} onChange={this._updateState.bind(this,'proxies')} bsStyle={formStyle}/>
+                <FormControl componentClass="textarea" label={`Proxies (${this._count(this.state.proxies)})`} rows="5" ref="proxies" value={this.state.proxies} onChange={this._updateState.bind(this,'proxies')} bsStyle={formStyle}/>
               </div>
             </Col>
             <Col md={4}>
               <div>
-                <FormControl type="textarea" label={`AXS (${this._count(this.state.axs)})`} rows="5" ref="axs" value={this.state.axs} onChange={this._updateState.bind(this,'axs')} bsStyle={formStyle}/>
+                <FormControl componentClass="textarea" label={`AXS (${this._count(this.state.axs)})`} rows="5" ref="axs" value={this.state.axs} onChange={this._updateState.bind(this,'axs')} bsStyle={formStyle}/>
               </div>
             </Col>
           </Row>
@@ -118,7 +119,7 @@ const DialogAddRanges = React.createClass({
   },
   _split: function(){
     let servers = this.props.servers.groupBy(s => s.get('role'));
-    let ranges = this.refs.ranges.refs.input.value;
+    let ranges = ReactDOM.findDOMNode(this.refs.ranges).value
     let splits = SubnetHelpers.split(ranges,servers.get(null),servers.get('proxy'));
     this.setState({
       servers: splits.servers.join("\n"),
