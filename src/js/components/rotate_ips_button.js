@@ -22,7 +22,8 @@ const RoateIpsButton = React.createClass({
       <Popover id="rotatePopover" title="Rotate IPs">
         <div id="rotatePopverInner">
           <span>{count} /24s</span>
-          <FormControl componentClass="textarea" rows="40" value={this.state.value} onChange={this._onChange} />
+          <FormControl componentClass="textarea" value={this.state.value} onChange={this._onChange} />
+          <br />
           <button className="btn btn-warning">Upload</button>
         </div>
       </Popover>
