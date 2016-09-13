@@ -13,7 +13,7 @@ const RoateIpsButton = React.createClass({
   },
   componentWillReceiveProps: function(nextProps){
     if(!this.state.value && nextProps.rotation){
-      this.setState({value: nextProps.rotation.map(r => r.get('ip')).join("\n")})
+      this.setState({value: nextProps.rotation.map(r => r.get('ip')).sort().join("\n")})
     }
   },
   render: function(){
