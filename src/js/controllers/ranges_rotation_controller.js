@@ -7,6 +7,9 @@ const RangesRotationController = {
     }).catch( e => {
       res.status(500).json({error: e.message})
     });
+  },
+  create: function(req,res){
+    console.log("post",req.body)
   }
 };
 

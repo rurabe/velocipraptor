@@ -56,6 +56,7 @@ const Routes = {
     api.delete('/datacenters/:id',DatacentersController.destroy);
 
     api.get('/datacenters/:id/rotation',RangesRotationController.index);
+    api.post('/datacenters/:id/rotation',RangesRotationController.create);
     
     api.get('/ranges',RangesController.index);
     api.post('/ranges',RangesController.create);

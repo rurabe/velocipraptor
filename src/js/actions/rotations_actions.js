@@ -12,6 +12,14 @@ const AddressesActions = {
       request.get(`/api/datacenters/${datacenterId}/rotation`).end(_dr.bind(this,'rotations.state',resolve,reject))
     });
   },
+  create: function(datacenterId,text){
+    const iplist = text.split("\n").filter(x => x);
+    return new Promise(function(resolve,reject){
+      request.post(`/api/datacenters/${datacenterId}/rotation`)
+        .send({iplist: iplist})
+        .end(resolve)
+    });
+  }
 };
 
 module.exports = AddressesActions;

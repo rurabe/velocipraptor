@@ -9,6 +9,7 @@ const _fields = "ranges.id,ranges.ips,ranges.notes,ranges.datacenter_id";
 
 const Ranges = {
   find: function(id){
+    console.log(id)
     return DB.query(this.select().where("ranges.id = ?",id).toParam()).then(_jsonize);
   },
   where: function(params){
@@ -27,12 +28,12 @@ const Ranges = {
   },
   create: function(params){
     let ips = params.ips.replace(/\s+/g,"");
-    let i = `INSERT INTO ranges (datacenter_id,ips) VALUES ($1,$2) ON CONFLICT(ips) DO UPDATE set datacenter_id = $1 RETURNING ${_fields};`
-    return DB.query({text: i, values: [params.datacenter_id,ips]}).then(_jsonize);
+    let text = `INSERT INTO ranges (datacenter_id,ips) VALUES ($1,$2) ON CONFLICT(ips) DO UPDATE set datacenter_id = $1 RETURNING *`;
+    return DB.query({text: text, values: [params.datacenter_id,ips]}).then(inserted => this.where({'ranges.id': inserted[0].id}) );
   },
   update: function(id,update){
-    let u = QueryHelpers.set(squel.update().table("ranges").where("id = ?",id).returning(_fields),update);
-    return DB.query(u.toParam()).then(_jsonize);
+    let u = QueryHelpers.set(squel.update().table("ranges").where("id = ?",id).returning('*'),update);
+    return DB.query(u.toParam()).then(updated => this.where({'ranges.id': updated[0].id}));
   },
   destroy: function(id){
     let unassign = 'select * from unassign((select datacenter_id from ranges where id = $1),(select ips from ranges where id = $1))'
@@ -56,7 +57,7 @@ const Ranges = {
         limit (select count from ips_count)
       )
       select distinct regexp_replace((ip & inet '255.255.255.0')::text,'\\.0/\\d\\d','') as ip,last_used from rested_addresses;
-    `
+    `;
     return DB.query({text: text, values: [datacenter_id]}).then(rows => {
       return rows.sort((a,b) => a && a.last_used > b.last_used ? -1 : 1 )
     });

@@ -24,7 +24,7 @@ const RoateIpsButton = React.createClass({
           <span>{count} /24s</span>
           <FormControl componentClass="textarea" value={this.state.value} onChange={this._onChange} />
           <br />
-          <button className="btn btn-warning">Upload</button>
+          <button className="btn btn-warning" onClick={this._submit}>Upload</button>
         </div>
       </Popover>
     );
@@ -36,11 +36,14 @@ const RoateIpsButton = React.createClass({
     );
   },
   _onEnter: function(){
-    this.setState({value: ''})
-    RotationsActions.index(this.props.datacenterId)
+    this.setState({value: ''});
+    RotationsActions.index(this.props.datacenterId);
   },
   _onChange: function(e){
-    this.setState({value: e.target.value})
+    this.setState({value: e.target.value});
+  },
+  _submit: function(){
+    RotationsActions.create(this.props.datacenterId,this.state.value);
   }
 });
 
