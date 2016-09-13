@@ -45,8 +45,10 @@ class DatacentersShowContainer extends React.Component {
       let servers = ServersStore.getState().filter(server => server.get('datacenter_id') === datacenter_id);
 
       return AddressesStore.getState().filter( a => {
-        let server_id = a.get('server_id').toString();
-        return servers.getIn([server_id,'role']) !== 'proxy';
+        if(!a.get('deactivated_at') && a.get('server_id')){
+          let server_id = a.get('server_id').toString();
+          return servers.getIn([server_id,'role']) !== 'proxy';
+        }
       }).sortBy( a => {
         let server_id = a.get('server_id').toString();
         return servers.getIn([server_id,'code']);

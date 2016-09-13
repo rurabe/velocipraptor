@@ -192,7 +192,8 @@ CREATE TABLE addresses (
     server_id integer,
     range_id integer,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    deactivated_at timestamp without time zone
 );
 
 
@@ -561,6 +562,13 @@ CREATE INDEX index_datacenter_id_on_ranges ON ranges USING btree (datacenter_id)
 --
 
 CREATE INDEX index_datacenter_id_on_servers ON servers USING btree (datacenter_id);
+
+
+--
+-- Name: index_deactivated_at_on_addresses; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_deactivated_at_on_addresses ON addresses USING btree (deactivated_at);
 
 
 --

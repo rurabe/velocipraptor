@@ -5,7 +5,7 @@ const moment = require('moment-timezone');
 
 const QueryHelpers = require('../helpers/query_helpers');
 const _jsonize = QueryHelpers.jsonize;
-const _fields = "addresses.id,addresses.ip,addresses.server_id,addresses.range_id,addresses.notes"
+const _fields = 'addresses.id,addresses.ip,addresses.server_id,addresses.range_id,addresses.notes,addresses.deactivated_at';
 
 const _pulls = squel.select().from("pulls")
   .field("coalesce(json_object_agg(pulls.id,json_build_object('id',pulls.id,'search_date',extract(epoch from pulls.search_date),'success',pulls.success)),'{}'::json)")
