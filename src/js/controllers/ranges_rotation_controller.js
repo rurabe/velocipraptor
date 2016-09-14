@@ -1,4 +1,5 @@
 const Ranges = require('../models/ranges');
+const AveryTrips = require('../external/avery_trips');
 
 const RangesRotationController = {
   index: function(req,res){
@@ -9,7 +10,11 @@ const RangesRotationController = {
     });
   },
   create: function(req,res){
-    console.log("post",req.body)
+    return AveryTrips.thupdate(req.body.iplist).then(() => {
+      res.json({status: 'ok'});
+    }).catch(e => {
+      res.status(500).json({error: e.message});
+    });
   }
 };
 

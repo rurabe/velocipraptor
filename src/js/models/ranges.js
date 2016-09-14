@@ -65,13 +65,3 @@ const Ranges = {
 };
 
 module.exports = Ranges;
-
-// rested_addresses as (
-//         select addresses.ip,max(pulls.search_date) as last_used from addresses 
-//           inner join ranges on ranges.id = addresses.range_id
-//           left join pulls on pulls.address_id = addresses.id
-//           where datacenter_id = 8 group by addresses.id
-//           order by last_used desc, addresses.ip asc limit 
-
-//       )
-//       select distinct (ip & inet '255.255.255.0') as ip from rested_addresses;
