@@ -1,3 +1,4 @@
+'use strict';
 const Ranges = require('../models/ranges');
 const AveryTrips = require('../external/avery_trips');
 
@@ -6,7 +7,7 @@ const RangesRotationController = {
     return Ranges.rotate(req.params.id).then(ranges => {
       res.json({rotation: ranges});
     }).catch( e => {
-      res.status(500).json({error: e.message})
+      res.status(500).json({error: e.message});
     });
   },
   create: function(req,res){
