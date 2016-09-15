@@ -25,7 +25,7 @@ const AppUpdate = {
     if(process.env.NODE_ENV === 'production'){
       return _query(q);
     } else {
-      console.log(`wanted to send to mysql: "${q}"`);
+      console.log(`wanted to send to mysql to appupdate: "${q}"`);
       return Promise.resolve();
     }
     

@@ -34,7 +34,7 @@ const DatacentersShow = React.createClass({
             <h1>{dc.name}</h1>
             <h4>{dc.location}</h4>
             <ClipboardButton label="Copy IPs" text={this.props.datacenter_ips_function} className="btn btn-primary" />
-            <RotateIPsButton datacenterId={dc.id} rotation={this.props.rotation} />
+            <RotateIPsButton datacenterId={dc.id} rotation={this.props.rotation} page={this.props.page}/>
           </Col>
           <Col md={6}>
             <SpeedLimitInput value={dc.notes} rows="5" componentClass="textarea" placeholder="notes" onChange={this._onNotesChange}/>

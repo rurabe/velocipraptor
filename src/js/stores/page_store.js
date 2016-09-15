@@ -12,12 +12,14 @@ class PageStore extends MapStore {
 
   reduce(state, action){
     switch (action.type) {
-      case 'dialog.activate':
-        return state.set('dialog',action.mode);
-      case 'dialog.deactivate':
-        return state.set('dialog',null);
-      default:
-        return state;
+    case 'dialog.activate':
+      return state.set('dialog',action.mode);
+    case 'dialog.deactivate':
+      return state.set('dialog',null);
+    case 'rotations.create_status':
+      return state.set('rotate_create_status',action.status);
+    default:
+      return state;
     }
   }
 };

@@ -19,6 +19,7 @@ const RangesRotationController = {
       sftp: AveryTrips.thupdate(req.body.iplist),
       datacenter: Datacenters.find(req.params.id),
     }).then(props => {
+      console.log(props);
       const datacenter = props.datacenter[req.params.id];
       return AppUpdate.updateDatacenter(datacenter.axs_code);
     }).then(() => {
