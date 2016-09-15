@@ -40,8 +40,8 @@ const _assignServerIps = function(ips){
   });
 };
 
-const _assignProxyIps = function(datacenter_id,ips){
-  return _getProxyServers(datacenter_id).then( servers => {
+const _assignProxyIps = function(datacenter_id,role,ips){
+  return Servers.where({datacenter_id: datacenter_id, role: role}).then( servers => {
     if(servers.length > 0){
       let nper = Math.max(Math.floor(ips.length / servers.length),1);
       return Promise.map(ips,(ip,i) => {

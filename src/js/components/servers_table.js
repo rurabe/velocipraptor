@@ -7,12 +7,12 @@ const ServersTable = React.createClass({
   render: function(){
     let datacenterId = this.props.datacenter.get('id');
 
-    let ticketServers = this.props.servers.filter( s => s.get('role') !== 'proxy').map( (s,i) => {
-      return <ServersTableRow server={s} key={s.get('id')} datacenterId={datacenterId} i={i+1}/>
+    let ticketServers = this.props.servers.filter( s => !s.get('role')).map( (s,i) => {
+      return <ServersTableRow server={s} key={s.get('id')} datacenterId={datacenterId} i={i+1}/>;
     });
 
-    let proxyServers = this.props.servers.filter(s => s.get('role') === 'proxy').map( s => {
-      return <ServersTableRow server={s} key={s.get('id')} datacenterId={datacenterId}/>
+    let proxyServers = this.props.servers.filter(s => s.get('role') === 'proxy' || s.get('role') === 'axs').map( s => {
+      return <ServersTableRow server={s} key={s.get('id')} datacenterId={datacenterId}/>;
     });
 
     return (
@@ -23,7 +23,7 @@ const ServersTable = React.createClass({
           {proxyServers}
         </tbody>
       </table>
-    )
+    );
   }
 });
 

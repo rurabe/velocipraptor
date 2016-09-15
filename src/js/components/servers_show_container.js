@@ -32,22 +32,7 @@ class ServersShowContainer extends React.Component {
       .filter(range => range.get('datacenter_id') === datacenter_id)
     let addresses = AddressesStore.getState()
       .filter( a => a.get('server_id') === server_id )
-      .sort(SubnetHelpers.sort( a => a.get("ip") ))
-
-    let datacenter_ips_function = function(){
-      let servers = ServersStore.getState().filter(server => server.get('datacenter_id') === datacenter_id);
-
-      return AddressesStore.getState().filter( a => {
-        let server_id = a.get('server_id').toString();
-        return servers.getIn([server_id,'role']) !== 'proxy';
-      }).sortBy( a => {
-        let server_id = a.get('server_id').toString();
-        return servers.getIn([server_id,'code']);
-      }).map( a => {
-        let server_id = a.get('server_id').toString();
-        return [servers.getIn([server_id,'code']),SubnetHelpers.inetToMask(a.get('ip'))].join(",");
-      }).join("\n") || "no ips";
-    };
+      .sort(SubnetHelpers.sort( a => a.get("ip") ));
 
     return {
       datacenter: datacenter,
@@ -55,8 +40,7 @@ class ServersShowContainer extends React.Component {
       ranges: ranges,
       addresses: addresses.toIndexedSeq(),
       user: props.user,
-      datacenter_ips_function: datacenter_ips_function,
-    }
+    };
   }
 
   componentDidMount(){
@@ -64,9 +48,8 @@ class ServersShowContainer extends React.Component {
     let server_id = this.props.routeParams.server_id;
     DatacentersActions.index({id: datacenter_id});
     RangesActions.index({datacenter_id: datacenter_id});
-    ServersActions.index({datacenter_id: datacenter_id}).then( response => {
-      return AddressesActions.index({server_id: Object.keys(response.servers)});
-    })
+    ServersActions.index({'servers.id': server_id});
+    AddressesActions.index({server_id: server_id});
   }
 
   render(){
