@@ -16,6 +16,10 @@ const ServersShow = React.createClass({
     let dc = this.props.datacenter.toJSON();
     let s = this.props.server.toJSON();
     let onUpdate = ServersActions.update.bind(this,s.id);
+    let copyButton;
+    if(this.props.server.get('role')){
+      copyButton = <ClipboardButton label="Copy IPs" text={this._copyAddresses} className="btn btn-primary" />;
+    }
 
     return (
       <div id="datacenters-show">
@@ -28,6 +32,7 @@ const ServersShow = React.createClass({
           <Col md={12}>
             <h1>Server {s.code}</h1>
             <h4>{this.props.addresses.size} ips assigned</h4>
+            {copyButton}
             <table className="table table-condensed table-bordered server-table">
               <tbody>
                 <tr>
@@ -49,19 +54,14 @@ const ServersShow = React.createClass({
         <Row>
           <Col md={12}>
             <AddressesTable addresses={this.props.addresses} ranges={this.props.ranges} datacenterId={dc.id}/>
-            <ClipboardButton label="Copy IPs" text={this._copyAddresses} className="btn btn-primary" />
           </Col>
         </Row>
 
       </div>
     );
   },
-  _copyAddresses: function(trigger){
-    if(this.props.server.get('role') === 'proxy'){
-      return this.props.addresses.sort(SubnetHelpers.sort(a => a.get('ip'))).map(a => SubnetHelpers.inetToMask(a.get('ip')) ).join("\n");
-    } else {
-      return this.props.datacenter_ips_function();
-    }
+  _copyAddresses: function(){
+    return this.props.addresses.sort(SubnetHelpers.sort(a => a.get('ip'))).map(a => SubnetHelpers.inetToMask(a.get('ip')) ).join("\n");
   }
 });
 

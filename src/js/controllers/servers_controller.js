@@ -1,7 +1,9 @@
 const Servers = require('../models/servers');
+const QueryHelpers = require('../helpers/query_helpers');
+const _jsonize = QueryHelpers.jsonize;
 
 const _respond = function(promise,req,res){
-  return promise.then(servers => {
+  return promise.then(_jsonize).then(servers => {
     res.json(Object.assign({},req.query,{servers: servers}));
   }).catch( e => {
     res.status(500).json({error: e.message});

@@ -1,5 +1,6 @@
 const React = require('react');
 const {Link} = require('react-router');
+const cx = require('classnames');
 
 const EditableTableCell = require('./editable_table_cell');
 const AddressesActions = require('../actions/addresses_actions');
@@ -34,8 +35,13 @@ const AddressesTableRow = React.createClass({
         </td>
       )
     }
+
+    const classes = cx({
+      deactivated: a.deactivated_at,
+    },'address-row');
+
     return (
-      <tr data-id={a.id}>
+      <tr data-id={a.id} className={classes}>
         <td>{this.props.i}</td>
         <td>{SubnetHelpers.host(a.ip)}</td>
         <td>{SubnetHelpers.inetToMask(a.ip)}</td>

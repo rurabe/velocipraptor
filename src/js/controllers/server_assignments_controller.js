@@ -1,22 +1,20 @@
 'use strict';
 
 const Promise = require('bluebird');
-const DB = require('../db');
 
 const Servers = require('../models/servers');
 const Addresses = require('../models/addresses');
 const ServerAssignments = require('../models/server_assignments');
-
-const QueryHelpers = require('../helpers/query_helpers');
 
 const ServerAssignmentsController = {
   create: function(req,res){
     let data = req.body;
     return Promise.all([
       _assignServerIps(data.servers),
-      _assignProxyIps(req.params.datacenter_id,data.proxies),
-    ]).then((queries) => {
-      let serverIps = data.servers.map( assignment => assignment.split(",")[1] )
+      _assignProxyIps(req.params.datacenter_id,'proxy',data.proxies),
+      _assignProxyIps(req.params.datacenter_id,'axs',data.axs),
+    ]).then(() => {
+      let serverIps = data.servers.map( assignment => assignment.split(',')[1] );
       let ipMap = serverIps.concat(data.proxies);
       return Addresses.where({'ip': ipMap});
     }).then(addresses => {
@@ -28,14 +26,9 @@ const ServerAssignmentsController = {
   },
 };
 
-const _getProxyServers = function(datacenter_id){
-  let serversQuery = Servers.select({datacenter_id: datacenter_id, role: 'proxy'}).order("servers.number");
-  return DB.query(serversQuery.toParam())
-};
-
 const _assignServerIps = function(ips){
   return Promise.map(ips,(ip) => {
-    let assignment = ip.split(",");
+    let assignment = ip.split(',');
     return ServerAssignments.create(assignment[0],assignment[1]);
   });
 };
@@ -52,8 +45,8 @@ const _assignProxyIps = function(datacenter_id,role,ips){
       return Promise.resolve();
     }
 
-  })
-}
+  });
+};
 
 
 module.exports = ServerAssignmentsController;
