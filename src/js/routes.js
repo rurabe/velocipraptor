@@ -38,7 +38,8 @@ const Routes = {
 
     pages.get("/datacenters/:datacenter_id/servers/:id",IndexController.index);
     pages.get("/datacenters/:datacenter_id/ranges/:id",IndexController.index);
-    pages.get("/datacenters/:id/",IndexController.index)
+    pages.get("/datacenters/:id/axs",IndexController.index);
+    pages.get("/datacenters/:id/",IndexController.index);
 
     app.use('/',pages);
 

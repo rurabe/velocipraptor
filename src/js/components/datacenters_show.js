@@ -1,6 +1,7 @@
 const React = require('react');
 
 const {Row,Col,PanelGroup,Panel,Input} = require('react-bootstrap');
+const {Link} = require('react-router');
 
 const Dialog = require('./dialog')
 const Breadcrumbs = require('./breadcrumbs');
@@ -35,6 +36,7 @@ const DatacentersShow = React.createClass({
             <h4>{dc.location}</h4>
             <ClipboardButton label="Copy IPs" text={this.props.datacenter_ips_function} className="btn btn-primary" />
             <RotateIPsButton datacenterId={dc.id} rotation={this.props.rotation} page={this.props.page}/>
+            <Link to={`/datacenters/${dc.id}/axs`}><button className="btn btn-info">AXS Proxies</button></Link>
           </Col>
           <Col md={6}>
             <SpeedLimitInput value={dc.notes} rows="5" componentClass="textarea" placeholder="notes" onChange={this._onNotesChange}/>

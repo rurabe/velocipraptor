@@ -23,6 +23,9 @@ const DatacentersActions = {
     return new Promise(function(resolve,reject){
       request.del(`/api/datacenters/${id}`).end(_dr.bind(this,'datacenters.remove',resolve,reject))
     });
+  },
+  axsRandomize: function(datacenterId,wip){
+    
   }
 };
 

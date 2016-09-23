@@ -4,7 +4,7 @@ const DB = require('../db');
 
 const QueryHelpers = require('../helpers/query_helpers');
 const _jsonize = QueryHelpers.jsonize;
-const _fields = "datacenters.id,datacenters.name,datacenters.location,datacenters.axs_code,datacenters.defaults,datacenters.notes";
+const _fields = 'id,name,location,axs_code,axs_proxies,defaults,notes'.split(',').map(c => `datacenters.${c}`).join(',');
 
 const Datacenters = {
   find: function(id){

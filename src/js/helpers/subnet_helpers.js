@@ -125,8 +125,8 @@ const _sort = function(accessor){
     for(let i=1;i<5;i++){
       let an = parseInt(aa[i]);
       let bn = parseInt(ba[i]);
-      if( an < bn ){ return -1 }
-      if( an > bn ){ return 1  }
+      if( an < bn ){ return -1; }
+      if( an > bn ){ return 1;  }
     }
   }
 }
@@ -172,6 +172,11 @@ const SubnetHelpers = {
   size: function(inet){
     let n = parseInt(_parse(inet)[5]);
     return Math.pow(2,32-n);
+  },
+  toRegex: function(inet){
+    let i = _parse(inet);
+    let r = [i[1],i[2],i[3],i[4]].join("\\.");
+    return new RegExp(r,'i');
   }
 };
 

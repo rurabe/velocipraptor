@@ -1,0 +1,78 @@
+#axs-edit
+  display: flex
+  flex-direction: column
+  height: calc(100vh - 74px)
+
+  #axs-edit-body
+    height: calc(100% - 69px - 59px)
+    flex: 1
+
+  #axs-edit-body-inner
+    height: 100%
+    display: flex
+    flex-direction: row
+    align-content: stretch
+
+
+.axs-ranges-wrapper
+
+.axs-addresses-wrapper
+  height: 100%
+
+#axs-ranges
+  width: 300px
+  overflow-y: auto
+
+  td
+    padding: 2px
+
+  .checkbox
+    margin: 0px
+    height: 18px
+
+
+  .range-last-used,.range-live-count
+    margin-left: 5px
+
+  .range-live-count
+    color: $brand-success
+  .range-resting-count
+    color: $brand-danger
+
+  .range-last-used
+    font-size: 12px
+    color: $gray-light
+
+.axs-title
+  display: inline-block
+
+#axs-addresses
+  flex: 1
+  position: relative
+  padding-left: 20px
+  height: 100%
+  white-space: nowrap
+  overflow-x: scroll
+
+.axs-addresses-field
+  display: inline-block
+  padding-bottom: 10px
+  height: 100%
+  width: 200px
+  margin-right: 10px
+  h3
+    margin-top: 0px
+  textarea
+    height: calc(100% - 36px)
+
+  .addresses-field-close
+    margin-left: 10px
+    padding-left: 8px
+    padding-right: 8px
+
+.axs-actions
+  display: inline-block
+  vertical-align: text-bottom
+  margin-left: 5px
+  button
+    margin-left: 5px

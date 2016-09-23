@@ -38,6 +38,7 @@
     "moment": "^2.10.6",
     "moment-timezone": "^0.4.1",
     "mysql": "^2.9.0",
+    "netmask": "^1.0.6",
     "passport": "^0.3.2",
     "passport-google-oauth": "^0.2.0",
     "pg": "^4.4.3",

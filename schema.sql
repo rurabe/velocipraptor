@@ -228,7 +228,8 @@ CREATE TABLE datacenters (
     notes text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    axs_code text
+    axs_code text,
+    axs_proxies jsonb DEFAULT '[]'::jsonb
 );
 
 

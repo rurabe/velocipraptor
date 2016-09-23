@@ -14,26 +14,27 @@ const ServersActions = require('../actions/servers_actions');
 const RangesActions = require('../actions/ranges_actions');
 const AddressesActions = require('../actions/addresses_actions');
 
-const ServersShow = require('./servers_show');
+const AXSEdit = require('./axs_edit');
 const SubnetHelpers = require('../helpers/subnet_helpers');
 
-
-
-class ServersShowContainer extends React.Component {
+class AXSEditContainer extends React.Component {
   static getStores(){
     return [DatacentersStore,ServersStore,AddressesStore,RangesStore];
   }
 
   static calculateState(prevState,props){
     let datacenter_id = parseInt(props.routeParams.datacenter_id);
-    let server_id = parseInt(props.routeParams.server_id);
     let datacenter = DatacentersStore.get(datacenter_id.toString());
-    let server = ServersStore.get(server_id.toString());
+    let server = ServersStore.getState().find(s => {
+      return s.get('role') === 'proxy' && s.get('datacenter_id') === datacenter_id;
+    });
+    let server_id;
+    if(server){ server_id = server.get('id'); }
     let ranges = RangesStore.getState()
-      .filter(range => range.get('datacenter_id') === datacenter_id)
+      .filter(range => range.get('datacenter_id') === datacenter_id);
     let addresses = AddressesStore.getState()
-      .filter( a => a.get('server_id') === server_id )
-      .sort(SubnetHelpers.sort( a => a.get("ip") ));
+      .filter( a => a.get('server_id') === server_id && !a.get('deactivated_at') && (['axs','axsresting'].indexOf(a.get('role')) > -1) )
+      .sort(SubnetHelpers.sort( a => a.get('ip') ));
 
     return {
       datacenter: datacenter,
@@ -46,20 +47,26 @@ class ServersShowContainer extends React.Component {
 
   componentDidMount(){
     let datacenter_id = this.props.routeParams.datacenter_id;
-    let server_id = this.props.routeParams.server_id;
-    DatacentersActions.index({id: datacenter_id});
+    DatacentersActions.index({id: datacenter_id}).then(response => {
+      let update = {type: 'datacenters.merge', datacenters: {}};
+      update.datacenters[datacenter_id] = {axs_proxies_wip: response.datacenters[datacenter_id].axs_proxies};
+      Dispatcher.dispatch(update);
+    });
     RangesActions.index({datacenter_id: datacenter_id});
-    ServersActions.index({'servers.id': server_id});
-    AddressesActions.index({server_id: server_id});
+    ServersActions.index({datacenter_id: datacenter_id, role: 'proxy'}).then(response => {
+      return AddressesActions.index({server_id: Object.keys(response.servers), role: ['axs','axsresting']});
+    });
+    
+    
   }
 
   render(){
-    if(this.state.server && this.state.datacenter){
-      return <ServersShow {...this.state} />
+    if(this.state.datacenter && this.state.datacenter.get('axs_proxies_wip') && this.state.ranges.size > 0 && this.state.addresses.size > 0){
+      return <AXSEdit {...this.state} />
     } else {
       return <h1>loading</h1>
     };
   }
 }
 
-module.exports = Container.create(ServersShowContainer,{withProps: true});
+module.exports = Container.create(AXSEditContainer,{withProps: true});

@@ -12,7 +12,6 @@ const ServerAssignmentsController = {
     return Promise.all([
       _assignServerIps(data.servers),
       _assignProxyIps(req.params.datacenter_id,'proxy',data.proxies),
-      _assignProxyIps(req.params.datacenter_id,'axs',data.axs),
     ]).then(() => {
       let serverIps = data.servers.map( assignment => assignment.split(',')[1] );
       let ipMap = serverIps.concat(data.proxies);
