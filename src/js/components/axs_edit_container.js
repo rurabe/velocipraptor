@@ -62,10 +62,10 @@ class AXSEditContainer extends React.Component {
 
   render(){
     if(this.state.datacenter && this.state.datacenter.get('axs_proxies_wip') && this.state.ranges.size > 0 && this.state.addresses.size > 0){
-      return <AXSEdit {...this.state} />
+      return <AXSEdit {...this.state} />;
     } else {
-      return <h1>loading</h1>
-    };
+      return <h1>loading</h1>;
+    }
   }
 }
 

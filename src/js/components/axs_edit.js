@@ -2,19 +2,22 @@ const React = require('react');
 const _ = require('lodash');
 const Dispatcher = require('../dispatcher');
 const {Row,Col} = require('react-bootstrap');
+const moment = require('moment-timezone');
 
 const Breadcrumbs = require('./breadcrumbs');
 const AXSRanges = require('./axs_ranges');
 const AXSAddresses = require('./axs_addresses');
 
 const SubnetHelpers = require('../helpers/subnet_helpers');
+const AXSHelpers = require('../helpers/axs_helpers');
 
 const DatacentersActions = require('../actions/datacenters_actions');
 
-const ServersShow = React.createClass({
+const AXSEdit = React.createClass({
   render: function(){
     let dc = this.props.datacenter.toJSON();
-    let s = this.props.server.toJSON();
+
+    let updatedAt = dc.axs_proxies_updated_at ? `Last updated at ${moment(dc.axs_proxies_updated_at).format('h:mma MM-DD-YYYY')}` : 'Never set'
 
     let addressesData = this.props.addresses.reduce((r,add) => {
       let a = add.toJSON();
@@ -35,8 +38,9 @@ const ServersShow = React.createClass({
           <Col md={12}>
             <h1 className="axs-title">AXS Proxies</h1>
             <div className="axs-actions">
-              <button className="btn btn-warning btn-sm" onClick={this._randomize}>Randomize</button>
               <button className="btn btn-info btn-sm" onClick={this._addServer}>Add Server</button>
+              <button className="btn btn-warning btn-sm" onClick={this._randomize}>Randomize</button>
+              <span className="axs-updated-at">{updatedAt}</span>
             </div>
           </Col>
         </Row>
@@ -54,8 +58,14 @@ const ServersShow = React.createClass({
     Dispatcher.dispatch({type: 'datacenters.axs_wip_servers_create', datacenter_id: this.props.datacenter.get('id')});
   },
   _randomize: function(){
-    DatacentersActions.axsRandomize(this.props.datacenter.get('id'),this.props.datacenter.get('axs_proxies_wip').toJSON());
+    let dcid = this.props.datacenter.get('id');
+    let final = AXSHelpers.randomize(this.props.datacenter.get('axs_proxies_wip').toJSON());
+    return DatacentersActions.update(dcid,{axs_proxies: final, axs_proxies_updated_at: new Date().toISOString()}).then(() => {
+      let update = {type: 'datacenters.merge', datacenters: {}};
+      update.datacenters[dcid] = {axs_proxies_wip: final};
+      Dispatcher.dispatch(update);
+    });
   }
 });
 
-module.exports = ServersShow;
+module.exports = AXSEdit;
