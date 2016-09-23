@@ -12,6 +12,7 @@ const ServerAssignmentsController = {
     return Promise.all([
       _assignServerIps(data.servers),
       _assignProxyIps(req.params.datacenter_id,'proxy',data.proxies),
+      _assignAXS(data.axs),
     ]).then(() => {
       let serverIps = data.servers.map( assignment => assignment.split(',')[1] );
       let ipMap = serverIps.concat(data.proxies);
@@ -45,6 +46,10 @@ const _assignProxyIps = function(datacenter_id,role,ips){
     }
 
   });
+};
+
+const _assignAXS = function(ips){
+  return Addresses.updateAll({role: 'axs'},{ip: ips});
 };
 
 

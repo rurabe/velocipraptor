@@ -47,6 +47,10 @@ const Addresses = {
   },
   assign: function(ip,serverCode){
     return DB.query({text: 'SELECT address_id FROM assign($1,$2)', values:[serverCode,ip]});
+  },
+  updateAll: function(sets,criteria){
+    let q =  QueryHelpers.set(QueryHelpers.filter(squel.update().table('addresses').returning(_fields),criteria),sets);
+    return DB.query(q.toParam()).then(_jsonize);
   }
 };
 
