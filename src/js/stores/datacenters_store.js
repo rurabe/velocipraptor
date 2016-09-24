@@ -3,7 +3,7 @@ const {MapStore} = require('flux/utils');
 const Dispatcher = require('../dispatcher');
 const Immutable = require('immutable');
 const _ = require('lodash');
-const { Netmask } = require('netmask');
+const AXSHelpers = require('../helpers/axs_helpers');
 
 class DatacentersStore extends MapStore {
   reduce(state, action){
@@ -38,10 +38,7 @@ class DatacentersStore extends MapStore {
           newWIP[index] = `${a.host}:49872\r\n${newWIP[index]}`;
         });
       } else {
-        let r = new Netmask(action.range);
-        newWIP = newWIP.map(s => {
-          return s.split(/\r?\n/).filter(a => a && !r.contains(a)).join('\r\n');
-        });
+        newWIP = AXSHelpers.removeRange(newWIP,action.range);
       }
       return state.setIn([dcid,'axs_proxies_wip'],Immutable.fromJS(newWIP));
     }

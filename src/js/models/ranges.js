@@ -4,6 +4,7 @@ const DB = require('../db');
 const _ = require('lodash');
 
 const QueryHelpers = require('../helpers/query_helpers');
+const AXSHelpers = require('../helpers/axs_helpers');
 const _jsonize = QueryHelpers.jsonize;
 const _fields = "ranges.id,ranges.ips,ranges.notes,ranges.datacenter_id";
 
@@ -36,9 +37,15 @@ const Ranges = {
     return DB.query(u.toParam()).then(updated => this.where({'ranges.id': updated[0].id}));
   },
   destroy: function(id){
-    let unassign = 'select * from unassign((select datacenter_id from ranges where id = $1),(select ips from ranges where id = $1))'
-    let q = squel.update().table("ranges").where("id = ?",id).setFields({datacenter_id: null}).returning(_fields);
-    return DB.query({text: unassign, values: [id]}).then( unassigns => DB.query(q.toParam()) ).then(_jsonize);
+    return DB.query({text: 'select datacenters.*,ranges.ips as deleted_range from datacenters inner join ranges on ranges.datacenter_id = datacenters.id where ranges.id = $1;', values: [id]}).then(rows => {
+      let dc = rows[0];
+      let updatedProxies = AXSHelpers.removeRange(dc.axs_proxies,dc.deleted_range);
+      return DB.query({text: 'update datacenters set axs_proxies=$1 where id=$2;', values: [JSON.stringify(updatedProxies),dc.id]});
+    }).then(() => {
+      let unassign = 'select * from unassign((select datacenter_id from ranges where id = $1),(select ips from ranges where id = $1))'
+      let q = squel.update().table("ranges").where("id = ?",id).setFields({datacenter_id: null}).returning(_fields);
+      return DB.query({text: unassign, values: [id]}).then( unassigns => DB.query(q.toParam()) ).then(_jsonize)
+    });
   },
   rotate: function(datacenter_id){
     let text = `
