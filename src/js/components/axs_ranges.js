@@ -4,37 +4,25 @@ const _ = require('lodash');
 
 const AXSRangeRow = require('./axs_range_row');
 
-const SubnetHelpers = require('../helpers/subnet_helpers');
+const c = 'axs_last_active_at';
 
 const AXSRanges = React.createClass({
   mixins: [PRM],
   render: function(){
-
     const groupedAddresses = _.groupBy(this.props.addresses,a => a.range_id);
-
-    const rows = this.props.ranges.toIndexedSeq().sort((a,b) => {
-      if(!a.get('last_used')){ return 1 }
-      return a.get('last_used') < b.get('last_used') ? 1 : -1;
-    }).map(r => {
-      let range = r.toJSON();
-      let liveCount = 0;
-      let restingCount = 0;
-
-      if(groupedAddresses[range.id]){
-        _.forEach(groupedAddresses[range.id],a => {
-          if(a.axs_server > -1){ liveCount += 1; }
-          else { restingCount += 1; }
-        });
-      }
-      return <AXSRangeRow 
-        key={range.id}
-        datacenter_id={this.props.datacenter_id}
-        range={r} 
-        liveCount={liveCount} 
-        restingCount={restingCount}
-        addresses={groupedAddresses[range.id] || []}
-      />;
-    });
+    const rows = this.props.ranges.toIndexedSeq()
+      .sort((a,b) => b.get(c) ? (a.get(c) > b.get(c) ? -1 : 1) : 1 )
+      .map( r => {
+        let addresses = groupedAddresses[r.get('id')];
+        if(addresses){
+          return <AXSRangeRow 
+            key={r.get('id')}
+            datacenter_id={this.props.datacenter_id}
+            range={r} 
+            addresses={addresses}
+          />;
+        }
+      }).filter(x => x);
 
     return (
       <div id="axs-ranges">

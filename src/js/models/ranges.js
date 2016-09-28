@@ -1,16 +1,15 @@
 'use strict';
 const squel = require('squel').useFlavour('postgres');
 const DB = require('../db');
-const _ = require('lodash');
 
 const QueryHelpers = require('../helpers/query_helpers');
 const AXSHelpers = require('../helpers/axs_helpers');
+// const SubnetHelpers = require('../helpers/subnet_helpers');
 const _jsonize = QueryHelpers.jsonize;
-const _fields = "ranges.id,ranges.ips,ranges.notes,ranges.datacenter_id";
+const _fields = "ranges.id,ranges.ips,ranges.notes,ranges.datacenter_id,ranges.axs_last_active_at";
 
 const Ranges = {
   find: function(id){
-    console.log(id)
     return DB.query(this.select().where("ranges.id = ?",id).toParam()).then(_jsonize);
   },
   where: function(params){
@@ -49,8 +48,7 @@ const Ranges = {
   },
   rotate: function(datacenter_id){
     let text = `
-      with
-      ips_count as (
+      with ips_count as (
         select (count(*) * 350) as count from servers where datacenter_id = $1 and role is null
       ), 
       all_ranges as (
@@ -66,7 +64,7 @@ const Ranges = {
       select distinct regexp_replace((ip & inet '255.255.255.0')::text,'\\.0/\\d\\d','') as ip,last_used from rested_addresses;
     `;
     return DB.query({text: text, values: [datacenter_id]}).then(rows => {
-      return rows.sort((a,b) => a && a.last_used > b.last_used ? -1 : 1 )
+      return rows.sort((a,b) => a && a.last_used > b.last_used ? -1 : 1 );
     });
   }
 };

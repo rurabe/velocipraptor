@@ -27,7 +27,7 @@ const _calculateStatistics = function(addresses){
 const countObj = function(obj,criteria){
   let i = 0;
   for(let key in obj){
-    if(!criteria || criteria(obj[key])){ i++ }
+    if(!criteria || criteria(obj[key])){ i++; }
   }
   return i;
 };
@@ -51,7 +51,7 @@ const Addresses = {
   updateAll: function(sets,criteria){
     let q =  QueryHelpers.set(QueryHelpers.filter(squel.update().table('addresses').returning(_fields),criteria),sets);
     return DB.query(q.toParam()).then(_jsonize);
-  }
+  },
 };
 
 module.exports = Addresses;

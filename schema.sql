@@ -193,7 +193,8 @@ CREATE TABLE addresses (
     range_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    deactivated_at timestamp without time zone
+    deactivated_at timestamp without time zone,
+    role text
 );
 
 
@@ -229,7 +230,8 @@ CREATE TABLE datacenters (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     axs_code text,
-    axs_proxies jsonb DEFAULT '[]'::jsonb
+    axs_proxies jsonb DEFAULT '[]'::jsonb,
+    axs_proxies_updated_at timestamp without time zone
 );
 
 
@@ -345,7 +347,8 @@ CREATE TABLE ranges (
     notes text,
     datacenter_id integer,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    axs_last_active_at timestamp without time zone
 );
 
 

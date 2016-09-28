@@ -8,6 +8,7 @@ const RangesController = require('./controllers/ranges_controller');
 const RangesRotationController = require('./controllers/ranges_rotation_controller');
 const ServersController = require('./controllers/servers_controller');
 const ServerAssignmentsController = require('./controllers/server_assignments_controller');
+const AXSController = require('./controllers/axs_controller');
 
 const Passport = require('./config/passport');
 
@@ -59,6 +60,9 @@ const Routes = {
     api.get('/datacenters/:id/rotation',RangesRotationController.index);
     api.post('/datacenters/:id/rotation',RangesRotationController.create);
     
+    api.post('/datacenters/:id/axs',AXSController.create);
+    api.delete('/datacenters/:id/axs/:range_id',AXSController.destroy);
+
     api.get('/ranges',RangesController.index);
     api.post('/ranges',RangesController.create);
     api.put('/ranges/:id',RangesController.update);

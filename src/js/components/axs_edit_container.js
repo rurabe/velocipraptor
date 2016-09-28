@@ -33,7 +33,7 @@ class AXSEditContainer extends React.Component {
     let ranges = RangesStore.getState()
       .filter(range => range.get('datacenter_id') === datacenter_id);
     let addresses = AddressesStore.getState()
-      .filter( a => a.get('server_id') === server_id && !a.get('deactivated_at') && (['axs','axsresting'].indexOf(a.get('role')) > -1) )
+      .filter( a => a.get('server_id') === server_id && !a.get('deactivated_at') && (a.get('role') === 'axs') )
       .sort(SubnetHelpers.sort( a => a.get('ip') ));
 
     return {

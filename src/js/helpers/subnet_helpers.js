@@ -83,7 +83,7 @@ const _proxyDs = function(i){
 };
 
 const _formatIp = function(a,b,c,d,size){
-  return [[a,b,c,d].join("."),_mask(size)].join(",");
+  return [[a,b,c,d].join('.'),_mask(size)].join(',');
 };
 
 const _sample = function(arr,n){
@@ -111,10 +111,10 @@ const _assignToServers = function(ips,servs){
     let servers = _.shuffle(servs.toList().toJS());
     return ips.map( (ip,i) => {
       let server = servers[i%servers.length];
-      return [server.code,ip].join(",");
+      return [server.code,ip].join(',');
     }).sort();
   } else {
-    return ips.map( ip => [null,ip].join(","));
+    return ips.map( ip => [null,ip].join(','));
   }
 };
 
@@ -128,12 +128,12 @@ const _sort = function(accessor){
       if( an < bn ){ return -1; }
       if( an > bn ){ return 1;  }
     }
-  }
-}
+  };
+};
 
 const SubnetHelpers = {
   split: function(input,servers){
-    let ranges = input.split(/\n|\r/).filter(range => range)
+    let ranges = input.split(/\n|\r/).filter(range => range);
     let cs = ranges.reduce( (a,r) => { 
       let s = new Subnet(r);
       return a.concat(s.cs());
@@ -144,14 +144,14 @@ const SubnetHelpers = {
       obj.proxies = obj.proxies.concat(i.proxies);
       obj.axs     = obj.axs.concat(i.axs);
       return obj;
-    },{servers: [], proxies: [], axs: []})
+    },{servers: [], proxies: [], axs: []});
 
     return {
       servers: _assignToServers(ips.servers,servers).sort(),
       proxies: ips.proxies,
       axs: ips.axs,
       ranges: ranges
-    }
+    };
   },
   sort: _sort,
   mask: _mask,
@@ -159,15 +159,15 @@ const SubnetHelpers = {
   parse: _parse,
   inetToMask: function(inet){
     let i = _parse(inet);
-    return [[i[1],i[2],i[3],i[4]].join("."),_mask(i[5])].join(",");
+    return [[i[1],i[2],i[3],i[4]].join('.'),_mask(i[5])].join(',');
   },
   maskToInet: function(ipAndMask){
-    let split = ipAndMask.split(",");
-    return [split[0],_bits(split[1])].join("/");
+    let split = ipAndMask.split(',');
+    return [split[0],_bits(split[1])].join('/');
   },
   host: function(inet){
     let i = _parse(inet);
-    return [i[1],i[2],i[3],i[4]].join(".");
+    return [i[1],i[2],i[3],i[4]].join('.');
   },
   size: function(inet){
     let n = parseInt(_parse(inet)[5]);
@@ -175,11 +175,12 @@ const SubnetHelpers = {
   },
   toRegex: function(inet){
     let i = _parse(inet);
-    let r = [i[1],i[2],i[3],i[4]].join("\\.");
+    let r = [i[1],i[2],i[3],i[4]].join('\\.');
     return new RegExp(r,'i');
+  },
+  stripPort: function(str){
+    return str.replace(/\:\d*/i,'');
   }
 };
-
-window.SubnetHelpers = SubnetHelpers
 
 module.exports = SubnetHelpers;

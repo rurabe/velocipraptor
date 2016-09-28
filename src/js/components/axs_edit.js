@@ -11,13 +11,13 @@ const AXSAddresses = require('./axs_addresses');
 const SubnetHelpers = require('../helpers/subnet_helpers');
 const AXSHelpers = require('../helpers/axs_helpers');
 
-const DatacentersActions = require('../actions/datacenters_actions');
+const AXSActions = require('../actions/axs_actions');
 
 const AXSEdit = React.createClass({
   render: function(){
     let dc = this.props.datacenter.toJSON();
 
-    let updatedAt = dc.axs_proxies_updated_at ? `Last updated at ${moment(dc.axs_proxies_updated_at).format('h:mma MM-DD-YYYY')}` : 'Never set'
+    let updatedAt = dc.axs_proxies_updated_at ? `Last updated at ${moment(dc.axs_proxies_updated_at).format('h:mma MM-DD-YYYY')}` : 'Never set';
 
     let addressesData = this.props.addresses.reduce((r,add) => {
       let a = add.toJSON();
@@ -60,10 +60,10 @@ const AXSEdit = React.createClass({
   _randomize: function(){
     let dcid = this.props.datacenter.get('id');
     let final = AXSHelpers.randomize(this.props.datacenter.get('axs_proxies_wip').toJSON());
-    return DatacentersActions.update(dcid,{axs_proxies: final, axs_proxies_updated_at: new Date().toISOString()}).then(() => {
-      let update = {type: 'datacenters.merge', datacenters: {}};
-      update.datacenters[dcid] = {axs_proxies_wip: final};
-      Dispatcher.dispatch(update);
+    return AXSActions.create(dcid,final).then(() => {
+      let action = {type: 'datacenters.merge', datacenters: {}};
+      action.datacenters[dcid] = {axs_proxies_wip: final};
+      Dispatcher.dispatch(action);
     });
   }
 });
