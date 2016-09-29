@@ -1,6 +1,7 @@
 'use strict';
 const _ = require('lodash');
 const { Netmask } = require('netmask');
+const SubnetHelpers = require('../helpers/subnet_helpers');
 
 const AXSHelpers = {
   randomize: function(wip){
@@ -14,7 +15,9 @@ const AXSHelpers = {
   removeRange: function(proxies,range){
     let r = new Netmask(range);
     return proxies.map(s => {
-      return s.split(/\r?\n/).filter(a => a && !r.contains(a)).join('\r\n');
+      return s.split(/\r?\n/).filter(a => {
+        return a && !r.contains(SubnetHelpers.stripPort(a));
+      }).join('\r\n');
     });
   }
 };
