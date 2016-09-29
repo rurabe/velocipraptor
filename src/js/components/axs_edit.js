@@ -27,6 +27,11 @@ const AXSEdit = React.createClass({
       return r;
     },{});
 
+    const liveCount = _.reduce(dc.axs_proxies_wip,(count,s) => {
+      let c = s.split(/\r?\n/i).filter(x => x).length;
+      return count + c; 
+    },0);
+
     return (
       <div id="axs-edit">
         <Row>
@@ -40,7 +45,7 @@ const AXSEdit = React.createClass({
             <div className="axs-actions">
               <button className="btn btn-info btn-sm" onClick={this._addServer}>Add Server</button>
               <button className="btn btn-warning btn-sm" onClick={this._randomize}>Randomize</button>
-              <span className="axs-updated-at">{updatedAt}</span>
+              <span className="axs-updated-at">{liveCount} live proxies, {updatedAt}</span>
             </div>
           </Col>
         </Row>

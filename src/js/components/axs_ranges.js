@@ -4,6 +4,8 @@ const _ = require('lodash');
 
 const AXSRangeRow = require('./axs_range_row');
 
+const SubnetHelpers = require('../helpers/subnet_helpers');
+
 const c = 'axs_last_active_at';
 
 const AXSRanges = React.createClass({
@@ -11,7 +13,7 @@ const AXSRanges = React.createClass({
   render: function(){
     const groupedAddresses = _.groupBy(this.props.addresses,a => a.range_id);
     const rows = this.props.ranges.toIndexedSeq()
-      .sort((a,b) => b.get(c) ? (a.get(c) > b.get(c) ? -1 : 1) : 1 )
+      .sort(SubnetHelpers.sort(a => a.get('ips')))
       .map( r => {
         let addresses = groupedAddresses[r.get('id')];
         if(addresses){

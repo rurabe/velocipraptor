@@ -12,9 +12,10 @@ const AXSAddressesField = React.createClass({
     const header = this.props.i || 'Resting';
     const close = this.props.i ? <button className="addresses-field-close btn btn-xs btn-danger" onClick={this._deleteServer} tabIndex="-1">&times;</button> : null;
     const text = `${h}${this.props.text}`;
+    const count = this.props.text.split(/\r?\n/i).filter(x => x).length;
     return (
       <div className="axs-addresses-field">
-        <h3>{header} {close}</h3>
+        <h3>{header} <span className="axs-field-count">({count})</span> {close}</h3>
         <FormControl componentClass="textarea" value={text} readOnly={!this.props.i} onChange={this._updateServer}/>
       </div>
     );
