@@ -13,6 +13,7 @@ const Ranges = {
     return DB.query(this.select().where("ranges.id = ?",id).toParam()).then(_jsonize);
   },
   where: function(params){
+    console.log(this.select(params).toParam())
     return DB.query(this.select(params).toParam()).then(_jsonize);
   },
   select: function(params){

@@ -47,13 +47,13 @@ const _parse = function(row){
     search_date: _parseDate(row['Search Date']),
     event_name: _parseStr(row['Event Name']),
     event_link: _parseStr(row['Event Link']),
-    success: _parseSuccess(row),
-  }
+    success: _parseSuccess(row['Final Status'],row['Refresh Time']),
+  };
 };
 
 const _parseStr = function(string){
   return string && string.length > 0 ? string : null;
-}
+};
 
 const _parseDec = function(pricestring){
   if(!pricestring){ return null; }
@@ -63,18 +63,23 @@ const _parseDec = function(pricestring){
 
 const _parseDate = function(datestring){
   if(!datestring){ return null; }
-  let m = datestring.match(/(\d+)\/(\d+)\/(\d+) at (\d+)\:(\d+) (am|pm)/i)
+  let m = datestring.match(/(\d+)\/(\d+)\/(\d+) at (\d+)\:(\d+) (am|pm)/i);
   if(m){
     let hour = TimeHelpers.parseHour(m[4],m[6]);
     return moment.tz([m[3],(m[1] - 1),m[2],hour,m[5]],'America/Los_Angeles').toISOString();
   }
 };
 
-const _parseSuccess = function(row){
-  let status = row['Final Status'];
-  if(status.match(/refresh/i) || status.match(/stopped/i)){ return false }
-  return true;
-}
+const _parseSuccess = function(status,refresh_time,price){
+  let t = (refresh_time||'').match(/\d+\.?\d*/i);
+  return !(
+    (t && t[0] && parseFloat(t[0]) > 10) ||
+    (status.match(/refresh/i) && !price) ||
+    (status.match(/stopped/i) && !price) ||
+    status.match(/recap/i) ||
+    status.match(/captcha wrong/i)
+  );
+};
 
 const ThreadLog = {
   getLatest: function(){
@@ -97,9 +102,10 @@ const ThreadLog = {
       }).then( () => {        
         if(latest.length === 100){ return this.importLatest() }
         else { return latest; }
-      })
-    })
-  }
+      });
+    });
+  },
+  parseSuccess: _parseSuccess,
 };
 
 module.exports = ThreadLog;
