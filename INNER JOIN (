@@ -1,0 +1,29 @@
+  INNER JOIN (
+    select id,search_date from (select ranges.id,search_date::date,rank() over (partition by ranges.id order by search_date::date) from ranges inner join addresses on ranges.id = addresses.range_id inner join pulls on addresses.id = pulls.address_id where datacenter_id = 8 group by ranges.id,search_date::date) t where rank = 2
+  ) ranks on ranks.id = ranges.id
+
+select 
+  r.id,
+  max(r.ips),
+  max(r.notes),
+  max(r.datacenter_id),
+  max(r.axs_last_active_at), 
+  sum(r.pulls_count) as pulls_count,
+  sum(CASE WHEN r.rank < 3 THEN r.pulls_count END) as recent_pulls,
+  sum(r.successes) as successes,
+  sum(CASE WHEN r.rank < 3 THEN r.successes END) as recent_successes,
+  max(r.date) AS last_used
+  from (
+    select 
+    ranges.*, 
+    count(pulls)::int AS pulls_count, 
+    sum(success::int) AS successes,
+    pulls.search_date::date as date,
+    rank() over (partition by ranges.id order by pulls.search_date::date desc)
+    FROM ranges 
+    INNER JOIN addresses ON (ranges.id = addresses.range_id) 
+    LEFT JOIN pulls ON (pulls.address_id = addresses.id) 
+    WHERE (datacenter_id =8 and pulls.search_date is not null) 
+    GROUP BY ranges.id,pulls.search_date::date
+  ) r
+  group by r.id;

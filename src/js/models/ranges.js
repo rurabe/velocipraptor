@@ -17,15 +17,29 @@ const Ranges = {
     return DB.query(this.select(params).toParam()).then(_jsonize);
   },
   select: function(params){
-    let q = squel.select().field(_fields).from("ranges")
-      .join('addresses',null,'ranges.id = addresses.range_id').group('ranges.id')
+    let r = squel.select().from('ranges')
+      .join('addresses',null,'ranges.id = addresses.range_id').group('ranges.id,pulls.search_date::date')
       .left_join('pulls',null,'pulls.address_id = addresses.id')
-      .field('max(pulls.search_date)','last_used')
+      .field('ranges.*')
+      .field('max(pulls.search_date::date)','last_used')
       .field('count(pulls)::int','pulls_count')
-      .field("count(CASE WHEN pulls.search_date > now() - interval '1 month' THEN 1 END)::int",'recent_pulls')
-      .field('count(CASE WHEN success THEN 1 END)::int','successes')
-      .field("count(CASE WHEN pulls.search_date > now() - interval '1 month' AND pulls.success THEN 1 END)::int",'recent_successes');
-    return QueryHelpers.filter(q,params);
+      .field('sum(success::int)','successes')
+      .field('pulls.search_date::date','date')
+      .field('rank() over (partition by ranges.id order by pulls.search_date::date desc)','rank')
+      .where('pulls.search_date is not null');
+    let filteredR = QueryHelpers.filter(r,params);
+    let q = squel.select().from(filteredR,'r').group('id')
+      .field('id')
+      .field('max(ips)','ips')
+      .field('max(notes)','notes')
+      .field('max(datacenter_id)','datacenter_id')
+      .field('max(axs_last_active_at)','axs_last_active_at')
+      .field('sum(pulls_count) as pulls_count')
+      .field('sum(CASE WHEN rank < 3 THEN pulls_count END) as recent_pulls')
+      .field('sum(successes) as successes')
+      .field('sum(CASE WHEN rank < 3 THEN successes END) as recent_successes')
+      .field('max(date) AS last_used');
+    return q;
   },
   create: function(params){
     let ips = params.ips.replace(/\s+/g,"");
