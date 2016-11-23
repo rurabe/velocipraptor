@@ -25,8 +25,7 @@ const Ranges = {
       .field('count(pulls)::int','pulls_count')
       .field('sum(success::int)','successes')
       .field('pulls.search_date::date','date')
-      .field('rank() over (partition by ranges.id order by pulls.search_date::date desc)','rank')
-      .where('pulls.search_date is not null');
+      .field('rank() over (partition by ranges.id order by pulls.search_date::date desc nulls last)','rank')
     let filteredR = QueryHelpers.filter(r,params);
     let q = squel.select().from(filteredR,'r').group('id')
       .field('id')
