@@ -10,6 +10,7 @@ const ClipboardButton = require('./clipboard_button');
 const DatacentersActions = require('../actions/datacenters_actions');
 
 const SubnetHelpers = require('../helpers/subnet_helpers');
+const HourAllocatorHelpers = require('../helpers/hour_allocator_helpers');
 
 const DatacentersIndex = React.createClass({
   render: function(){
@@ -38,11 +39,11 @@ const DatacentersIndex = React.createClass({
     );
   },
   _createDatacenter: function(){
-    DatacentersActions.create({})
+    DatacentersActions.create({});
   },
   _formatProxies: function(){
-    let proxies = this.props.proxies.map(p => `${SubnetHelpers.host(p.get('ip'))}:49872` ).toArray()
-    return _.shuffle(proxies).join("\n");
+    let proxies = this.props.proxies.map(p => `${SubnetHelpers.host(p.get('ip'))}:49872` ).toArray();
+    return HourAllocatorHelpers.randomize(this.props.proxies);
   }
 });
 
