@@ -32,12 +32,12 @@ const Ranges = {
       .field('max(ips)','ips')
       .field('max(notes)','notes')
       .field('max(datacenter_id)','datacenter_id')
-      .field('max(axs_last_active_at)','axs_last_active_at')
+      .field('to_iso(max(axs_last_active_at))','axs_last_active_at')
       .field('sum(pulls_count) as pulls_count')
       .field('sum(CASE WHEN rank < 3 THEN pulls_count END) as recent_pulls')
       .field('sum(successes) as successes')
       .field('sum(CASE WHEN rank < 3 THEN successes END) as recent_successes')
-      .field('max(date) AS last_used');
+      .field(`to_char(max(date),'YYYY-MM-DD')`,'last_used');
     return q;
   },
   create: function(params){
