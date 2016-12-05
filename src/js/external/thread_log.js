@@ -71,6 +71,7 @@ const _parseDate = function(datestring){
 };
 
 const _parseSuccess = function(status,refresh_time,price){
+  if(status.match(/(incorrect password|searching|string|pool|value)/i)){ return null; }
   let t = (refresh_time||'').match(/\d+\.?\d*/i);
   return !(
     (t && t[0] && parseFloat(t[0]) > 10) ||

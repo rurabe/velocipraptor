@@ -13,7 +13,6 @@ const Ranges = {
     return DB.query(this.select().where("ranges.id = ?",id).toParam()).then(_jsonize);
   },
   where: function(params){
-    console.log(this.select(params).toParam())
     return DB.query(this.select(params).toParam()).then(_jsonize);
   },
   select: function(params){
@@ -22,7 +21,7 @@ const Ranges = {
       .left_join('pulls',null,'pulls.address_id = addresses.id')
       .field('ranges.*')
       .field('max(pulls.search_date::date)','last_used')
-      .field('count(pulls)::int','pulls_count')
+      .field('sum(case when success is null then 0 else 1 end)','pulls_count')
       .field('sum(success::int)','successes')
       .field('pulls.search_date::date','date')
       .field('rank() over (partition by ranges.id order by pulls.search_date::date desc nulls last)','rank')
@@ -33,10 +32,10 @@ const Ranges = {
       .field('max(notes)','notes')
       .field('max(datacenter_id)','datacenter_id')
       .field('to_iso(max(axs_last_active_at))','axs_last_active_at')
-      .field('sum(pulls_count) as pulls_count')
-      .field('sum(CASE WHEN rank < 3 THEN pulls_count END) as recent_pulls')
-      .field('sum(successes) as successes')
-      .field('sum(CASE WHEN rank < 3 THEN successes END) as recent_successes')
+      .field('sum(pulls_count)::int as pulls_count')
+      .field('sum(CASE WHEN rank < 3 THEN pulls_count END)::int as recent_pulls')
+      .field('sum(successes)::int as successes')
+      .field('sum(CASE WHEN rank < 3 THEN successes END)::int as recent_successes')
       .field(`to_char(max(date),'YYYY-MM-DD')`,'last_used');
     return q;
   },

@@ -13,12 +13,15 @@ const AddressesChart = React.createClass({
     let width = 975 - margin.left - margin.right;
     let height = 400 - margin.top - margin.bottom;
 
+    let thresh = moment().subtract(45,'days');
+
     let data = this.props.pulls
+      .filter(p => moment(p.get('search_date')*1000).diff(thresh) > 90)
       .groupBy( (pull) => moment(pull.get("search_date") * 1000).startOf('day') )
       .map( (pulls,date) => { 
         return pulls.reduce( (obj,pull) => {
           obj.pulls++;
-          if( pull.get('success') ){ obj.successes++ }
+          if( pull.get('success') ){ obj.successes++; }
           return obj;
         },{pulls: 0, successes: 0});
       }).map( (pulls,date) => {
@@ -26,8 +29,6 @@ const AddressesChart = React.createClass({
         pulls.success_rate = (pulls.successes/pulls.pulls) * 100;
         return pulls;
       }).sortBy( (pulls) => pulls.date ).toArray();
-
-    // console.log(data)
 
     let chart = d3.select(svg)
       .attr('width',width + margin.left + margin.right)

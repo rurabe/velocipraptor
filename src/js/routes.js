@@ -15,11 +15,11 @@ const Passport = require('./config/passport');
 const bp = require('body-parser');
 
 const _authenticate = function(req,res,next){
-  if(req.isAuthenticated()){
+  // if(req.isAuthenticated()){
     return next();
-  } else {
-    res.status(401).json({error: 'Unauthorized'});
-  }
+  // } else {
+  //   res.status(401).json({error: 'Unauthorized'});
+  // }
 }
 
 const Routes = {
