@@ -24,22 +24,22 @@ class DatacentersIndexContainer extends React.Component {
 
     let datacenters = DatacentersStore.getState();
     let proxyServerIds = ServersStore.getState().filter(s => s.get('role') === 'proxy').map(s => s.get("id")).toArray();
-    let proxies = AddressesStore.getState().filter(a => proxyServerIds.indexOf(a.get('server_id')) > -1 )
+    let proxies = AddressesStore.getState().filter(a => proxyServerIds.indexOf(a.get('server_id')) > -1 );
 
     return {
       datacenters: datacenters.toIndexedSeq(),
       proxies: proxies,
       user: props.user,
-    }
+    };
   }
 
   componentDidMount(){
     DatacentersActions.index();
     ServersActions.index({role: 'proxy'}).then(response => {
       return AddressesActions.index({server_id: Object.keys(response.servers)}).then(response => {
-        this.setState({proxiesLoaded: true})
+        this.setState({proxiesLoaded: true});
       });
-    })
+    });
   }
 
   render(){

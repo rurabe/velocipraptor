@@ -6,6 +6,7 @@ const AddressesController = require('./controllers/addresses_controller');
 const DatacentersController = require('./controllers/datacenters_controller');
 const RangesController = require('./controllers/ranges_controller');
 const RangesRotationController = require('./controllers/ranges_rotation_controller');
+const RangesSearchController = require('./controllers/ranges_search_controller');
 const ServersController = require('./controllers/servers_controller');
 const ServerAssignmentsController = require('./controllers/server_assignments_controller');
 const AXSController = require('./controllers/axs_controller');
@@ -68,7 +69,7 @@ const Routes = {
     api.put('/ranges/:id',RangesController.update);
     api.delete('/ranges/:id',RangesController.destroy);
 
-
+    api.get('/ranges/search',RangesSearchController.index);
     
     api.get('/servers',ServersController.index);
     api.post('/servers',ServersController.create);

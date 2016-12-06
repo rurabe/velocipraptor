@@ -40,16 +40,26 @@ class RangesShowContainer extends React.Component {
       addresses: addresses.toIndexedSeq(),
       servers: servers,
       user: props.user
-    }
+    };
   }
 
   componentDidMount(){
     let datacenter_id = this.props.routeParams.datacenter_id;
     let range_id = this.props.routeParams.range_id;
+    return this.loadData(datacenter_id,range_id);
+  }
+
+  componentWillReceiveProps(nextProps){
+    let datacenter_id = nextProps.routeParams.datacenter_id;
+    let range_id = nextProps.routeParams.range_id;
+    return this.loadData(datacenter_id,range_id);
+  }
+
+  loadData(datacenter_id,range_id){
     DatacentersActions.index({id: datacenter_id});
-    RangesActions.index({"ranges.id": range_id});
+    RangesActions.index({'ranges.id': range_id});
     AddressesActions.index({range_id: range_id});
-    ServersActions.index({datacenter_id: datacenter_id})
+    ServersActions.index({datacenter_id: datacenter_id});
   }
 
   render(){

@@ -79,6 +79,12 @@ const Ranges = {
     return DB.query({text: text, values: [datacenter_id]}).then(rows => {
       return rows.sort((a,b) => a && a.last_used > b.last_used ? -1 : 1 );
     });
+  },
+  search: function(string){
+    return DB.query({
+      text: 'select ips,ranges.id,datacenter_id from ranges inner join datacenters on datacenters.id = ranges.datacenter_id where abbrev(ips) ~ $1;',
+      values: [string],
+    });
   }
 };
 

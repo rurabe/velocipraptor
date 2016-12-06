@@ -4,6 +4,8 @@ const React = require('react');
 const B = require('react-bootstrap');
 const {Link} = require('react-router');
 
+const RangeSearch = require('./range_search');
+
 const Navbar  = React.createClass({
 	render: function(){
     return (
@@ -18,9 +20,14 @@ const Navbar  = React.createClass({
           <B.Nav>
             
           </B.Nav>
+
+          <B.Navbar.Form pullLeft>
+            <RangeSearch />
+          </B.Navbar.Form>
           <B.Nav pullRight>
             <B.NavItem eventKey={1} onClick={this._logout}>Logout</B.NavItem>
           </B.Nav>
+
         </B.Navbar.Collapse>
       </B.Navbar>
     );
