@@ -25,7 +25,7 @@ class RangeSearch extends React.Component {
 
   render(){
     let options = this.state.results.map(r => {
-      return {label: r.get('ips'), value: r.get('id'), datacenter_id: r.get('datacenter_id')};
+      return {label: [r.get('ips'),r.get('datacenter')].join(' '), value: r.get('id'), datacenter_id: r.get('datacenter_id')};
     }).toJSON();
     return (
       <Select options={options} placeholder="Search ranges" searchable={true} onInputChange={this._onSearch} isLoading={this.state.loading} onChange={this._onChange} width={200}/>

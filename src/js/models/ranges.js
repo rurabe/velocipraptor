@@ -82,7 +82,7 @@ const Ranges = {
   },
   search: function(string){
     return DB.query({
-      text: 'select ips,ranges.id,datacenter_id from ranges inner join datacenters on datacenters.id = ranges.datacenter_id where abbrev(ips) ~ $1;',
+      text: 'select ips,ranges.id,datacenter_id,datacenters.name as datacenter from ranges inner join datacenters on datacenters.id = ranges.datacenter_id where abbrev(ips) ~ $1;',
       values: [string],
     });
   }
